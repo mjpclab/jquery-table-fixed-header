@@ -1,0 +1,37 @@
+﻿.gridview
+{
+	width:100%;
+	border-collapse:collapse;
+	border:10px #ddd solid;
+}
+
+.gridview thead
+{
+	background-color:#b5d0f8;	
+}
+
+.gridview tbody tr:nth-child(odd)
+{
+	background:#fff;
+}
+.gridview tbody tr:nth-child(even)
+{
+	background:#eee;
+}
+
+.gridview tbody tr:hover
+{
+	background:#edffe9;
+}
+
+.gridview th,
+.gridview td 
+{
+	padding:2px 5px;
+	border:10px #ddd solid;
+}
+
+.gridview .center 
+{
+	text-align:center;
+} 
