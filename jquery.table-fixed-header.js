@@ -1,15 +1,20 @@
 jQuery.fn.tableFixedHeader = function (initOption) {
+	"use strict";
+
 	var $ = jQuery;
 
 	var defaultOption = {
 		headerRows: 1,
-		fixedClass: "table-fixed-header"
+		fixedClass: "table-fixed-header",
+		fixedTop: "0"
 	};
 
 	var option = $.extend({}, defaultOption, initOption);
+	option.fixedTop = parseInt(option.fixedTop);
 
 	var $win = $(window);
 	//var isIE6 = (window.ActiveXObject && !window.XMLHttpRequest);
+	var isIE7 = (window.ActiveXObject && window.XMLHttpRequest && !document.documentMode);
 	var raf = window.requestAnimationFrame ||
 		window.webkitRequestAnimationFrame ||
 		window.mozRequestAnimationFrame ||
@@ -19,9 +24,9 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 			setTimeout(callback, 1000 / 60);
 		};
 
-	function findHeader($table) {
+	var findHeader = function ($table) {
 		return $table.find("tr:lt(" + option.headerRows + ")");
-	}
+	};
 
 	var getActualWidth = window.getComputedStyle ? function ($element) {
 		return window.getComputedStyle($element[0]).width;
@@ -30,7 +35,7 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 		return $element.width() + parseInt($element.css("padding-left")) + parseInt($element.css("padding-right"));
 	};
 
-	function syncSize($clonedContainers, $originalContainers) {
+	var syncSize = function ($clonedContainers, $originalContainers) {
 		$clonedContainers.each(function (containerIndex, clonedContainer) {
 			var $clonedContainer = $(clonedContainer);
 			var $originalContainer = $originalContainers.eq(containerIndex);
@@ -49,12 +54,11 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 				});
 			});
 		});
-	}
+	};
 
 	this.filter("table").each(function (index, element) {
 		var updating = false;
-
-		function delaySyncSize() {
+		var delaySyncSize = function () {
 			if (!updating) {
 				updating = true;
 				raf(function () {
@@ -62,7 +66,7 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 					updating = false;
 				});
 			}
-		}
+		};
 
 		var $table = $(element);
 		var $headers = findHeader($table);
@@ -77,20 +81,23 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 			$tableCloned.children().not($headerContainersCloned).remove();
 
 			$tableCloned.removeAttr("id").find("[id]").removeAttr("id");
-			$tableCloned.css("table-layout", "fixed").addClass(option.fixedClass)/*.hide()*/;  //hide() not work for IE7, use $win.scroll() below
+			$tableCloned.css("table-layout", "fixed").addClass(option.fixedClass);
+			if (!isIE7) {      //hide() not work for IE7, use $win.scroll() below
+				$tableCloned.hide();
+			}
 			delaySyncSize();
 
 			$table.after($tableCloned);
 
 			var toggling = false;
 
-			function switchHeaderVisible() {
+			var switchHeaderVisible = function () {
 				if (!toggling) {
 					toggling = true;
 					raf(function () {
 						var scrollTop = $win.scrollTop();
 						var headersTop = $headers.offset().top;
-						if (scrollTop > headersTop && scrollTop <= (headersTop + $table.outerHeight(true) - $tableCloned.outerHeight(true))) {
+						if ((scrollTop > headersTop - option.fixedTop) && (scrollTop <= headersTop + $table.outerHeight(true) - $tableCloned.outerHeight(true) - option.fixedTop)) {
 							syncSize($headerContainersCloned, $headerContainers);
 							$tableCloned.show();
 							$win.on("resize", delaySyncSize);
@@ -101,7 +108,7 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 						toggling = false;
 					});
 				}
-			}
+			};
 
 			var positioning = false;
 			$win.scroll(function () {
@@ -110,7 +117,7 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 					raf(function () {
 						$tableCloned.css({
 							"position": "fixed",
-							"top": 0,
+							"top": option.fixedTop + "px",
 							"left": $table.offset().left - $win.scrollLeft(),
 							"zoom": 1    //for IE7
 						});
