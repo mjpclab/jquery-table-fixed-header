@@ -6,11 +6,14 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 	var defaultOption = {
 		headerRows: 1,
 		fixedClass: "table-fixed-header",
-		fixedTop: "0"
+		fixedTop: 0
 	};
 
 	var option = $.extend({}, defaultOption, initOption);
-	option.fixedTop = parseInt(option.fixedTop);
+	if(typeof(option.fixedTop) !== "function") {
+		option.fixedTop = parseInt(option.fixedTop);	
+	}
+	
 
 	var $win = $(window);
 	//var isIE6 = (window.ActiveXObject && !window.XMLHttpRequest);
@@ -23,6 +26,10 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 		function (callback) {
 			setTimeout(callback, 1000 / 60);
 		};
+
+	var getFixedTop = function() {
+		return typeof(option.fixedTop) === "function" ? option.fixedTop() : option.fixedTop;
+	}
 
 	var findHeader = function ($table) {
 		return $table.find("tr:lt(" + option.headerRows + ")");
@@ -58,6 +65,7 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 
 	this.filter("table").each(function (index, element) {
 		var $element=$(element);
+		var fixedTop;
 
 		$element.data("updating", false);
 		var delaySyncSize = function () {
@@ -98,7 +106,7 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 					raf(function () {
 						var scrollTop = $win.scrollTop();
 						var headersTop = $headers.offset().top;
-						if ((scrollTop > headersTop - option.fixedTop) && (scrollTop <= headersTop + $table.outerHeight(true) - $tableCloned.outerHeight(true) - option.fixedTop)) {
+						if ((scrollTop > headersTop - fixedTop) && (scrollTop <= headersTop + $table.outerHeight(true) - $tableCloned.outerHeight(true) - fixedTop)) {
 							syncSize($headerContainersCloned, $headerContainers);
 							$tableCloned.show();
 							$win.on("resize", delaySyncSize);
@@ -113,12 +121,13 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 
 			$element.data("positioning", false);
 			$win.scroll(function () {
+				fixedTop = getFixedTop();
 				if (!$element.data("positioning")) {
 					$element.data("positioning", true);
 					raf(function () {
 						$tableCloned.css({
 							"position": "fixed",
-							"top": option.fixedTop + "px",
+							"top": fixedTop + "px",
 							"left": $table.offset().left - $win.scrollLeft(),
 							"zoom": 1    //for IE7
 						});
