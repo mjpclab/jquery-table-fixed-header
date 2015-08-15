@@ -57,13 +57,15 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 	};
 
 	this.filter("table").each(function (index, element) {
-		var updating = false;
+		var $element=$(element);
+
+		$element.data("updating", false);
 		var delaySyncSize = function () {
-			if (!updating) {
-				updating = true;
+			if (!$element.data("updating")) {
+				$element.data("updating", true);
 				raf(function () {
 					syncSize($headerContainersCloned, $headerContainers);
-					updating = false;
+					$element.data("updating", false);
 				});
 			}
 		};
@@ -89,11 +91,10 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 
 			$table.after($tableCloned);
 
-			var toggling = false;
-
+			$element.data("toggling", false);
 			var switchHeaderVisible = function () {
-				if (!toggling) {
-					toggling = true;
+				if (!$element.data("toggling")) {
+					$element.data("toggling", true);
 					raf(function () {
 						var scrollTop = $win.scrollTop();
 						var headersTop = $headers.offset().top;
@@ -105,15 +106,15 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 							$tableCloned.hide();
 							$win.off("resize", delaySyncSize);
 						}
-						toggling = false;
+						$element.data("toggling", false);
 					});
 				}
 			};
 
-			var positioning = false;
+			$element.data("positioning", false);
 			$win.scroll(function () {
-				if (!positioning) {
-					positioning = true;
+				if (!$element.data("positioning")) {
+					$element.data("positioning", true);
 					raf(function () {
 						$tableCloned.css({
 							"position": "fixed",
@@ -122,7 +123,7 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 							"zoom": 1    //for IE7
 						});
 						switchHeaderVisible();
-						positioning = false;
+						$element.data("positioning", false);
 					});
 				}
 			});
