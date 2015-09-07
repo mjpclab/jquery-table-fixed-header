@@ -29,7 +29,7 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 
 	var getFixedTop = function() {
 		return typeof(option.fixedTop) === "function" ? option.fixedTop() : option.fixedTop;
-	}
+	};
 
 	var findHeader = function ($table) {
 		return $table.find("tr:lt(" + option.headerRows + ")");
