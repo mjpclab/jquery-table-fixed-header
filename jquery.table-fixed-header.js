@@ -10,10 +10,9 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 	};
 
 	var option = $.extend({}, defaultOption, initOption);
-	if(typeof(option.fixedTop) !== "function") {
-		option.fixedTop = parseInt(option.fixedTop);	
+	if (typeof(option.fixedTop) !== "function") {
+		option.fixedTop = parseInt(option.fixedTop);
 	}
-	
 
 	var $win = $(window);
 	//var isIE6 = (window.ActiveXObject && !window.XMLHttpRequest);
@@ -27,7 +26,7 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 			setTimeout(callback, 1000 / 60);
 		};
 
-	var getFixedTop = function() {
+	var getFixedTop = function () {
 		return typeof(option.fixedTop) === "function" ? option.fixedTop() : option.fixedTop;
 	};
 
@@ -64,80 +63,83 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 	};
 
 	this.filter("table").each(function (index, element) {
-		var $element=$(element);
+		var $table = $(element);
 		var fixedTop;
 
-		$element.data("updating", false);
+		$table.data("updating", false);
 		var delaySyncSize = function () {
-			if (!$element.data("updating")) {
-				$element.data("updating", true);
+			if (!$table.data("updating")) {
+				$table.data("updating", true);
 				raf(function () {
 					syncSize($headerContainersCloned, $headerContainers);
-					$element.data("updating", false);
+					$table.data("updating", false);
 				});
 			}
 		};
 
-		var $table = $(element);
 		var $headers = findHeader($table);
-		if ($headers.length) {
-			var $headerContainers = $headers.parent();
-
-			var $tableCloned = $table.clone();
-			var $headersCloned = findHeader($tableCloned);
-			var $headerContainersCloned = $headersCloned.parent();
-
-			$tableCloned.find("tr").not($headersCloned).remove();
-			$tableCloned.children().not($headerContainersCloned).remove();
-
-			$tableCloned.removeAttr("id").find("[id]").removeAttr("id");
-			$tableCloned.css("table-layout", "fixed").addClass(option.fixedClass);
-			if (!isIE7) {      //hide() not work for IE7, use $win.scroll() below
-				$tableCloned.hide();
-			}
-			delaySyncSize();
-
-			$table.after($tableCloned);
-
-			$element.data("toggling", false);
-			var switchHeaderVisible = function () {
-				if (!$element.data("toggling")) {
-					$element.data("toggling", true);
-					raf(function () {
-						var scrollTop = $win.scrollTop();
-						var headersTop = $headers.offset().top;
-						if ((scrollTop > headersTop - fixedTop) && (scrollTop <= headersTop + $table.outerHeight(true) - $tableCloned.outerHeight(true) - fixedTop)) {
-							syncSize($headerContainersCloned, $headerContainers);
-							$tableCloned.show();
-							$win.on("resize", delaySyncSize);
-						} else {
-							$tableCloned.hide();
-							$win.off("resize", delaySyncSize);
-						}
-						$element.data("toggling", false);
-					});
-				}
-			};
-
-			$element.data("positioning", false);
-			$win.scroll(function () {
-				fixedTop = getFixedTop();
-				if (!$element.data("positioning")) {
-					$element.data("positioning", true);
-					raf(function () {
-						$tableCloned.css({
-							"position": "fixed",
-							"top": fixedTop + "px",
-							"left": $table.offset().left - $win.scrollLeft(),
-							"zoom": 1    //for IE7
-						});
-						switchHeaderVisible();
-						$element.data("positioning", false);
-					});
-				}
-			});
-			$win.scroll();
+		if (!$headers.length) {
+			return;
 		}
+
+		var $headerContainers = $headers.parent();
+
+		var $tableCloned = $table.clone();
+		var $headersCloned = findHeader($tableCloned);
+		var $headerContainersCloned = $headersCloned.parent();
+
+		$tableCloned.find("tr").not($headersCloned).remove();
+		$tableCloned.children().not($headerContainersCloned).remove();
+
+		$tableCloned.removeAttr("id").css({"margin": "0", "padding": "0"}).find("[id]").removeAttr("id");
+		$tableCloned.css("table-layout", "fixed").addClass(option.fixedClass);
+		if (!isIE7) {      //hide() not work for IE7, use $win.scroll() below
+			$tableCloned.hide();
+		}
+		delaySyncSize();
+
+		$table.after($tableCloned);
+
+		$table.data("toggling", false);
+		var switchHeaderVisible = function () {
+			if (!$table.data("toggling")) {
+				$table.data("toggling", true);
+				raf(function () {
+					var scrollTop = $win.scrollTop();
+					var visibleTop = scrollTop + fixedTop;
+					var headersTop = $table.offset().top;
+					if ((visibleTop >= headersTop ) && (visibleTop + $tableCloned.outerHeight() <= headersTop + $table.outerHeight())) {
+						syncSize($headerContainersCloned, $headerContainers);
+						$tableCloned.show();
+						$win.on("resize", delaySyncSize);
+					} else {
+						$tableCloned.hide();
+						$win.off("resize", delaySyncSize);
+					}
+					$table.data("toggling", false);
+				});
+			}
+		};
+
+		$table.data("positioning", false);
+		$win.scroll(function () {
+			fixedTop = getFixedTop();
+			if (!$table.data("positioning")) {
+				$table.data("positioning", true);
+				raf(function () {
+					$tableCloned.css({
+						"position": "fixed",
+						"top": fixedTop + "px",
+						"left": $table.offset().left - $win.scrollLeft(),
+						"zoom": 1    //for IE7
+					});
+					switchHeaderVisible();
+					$table.data("positioning", false);
+				});
+			}
+		});
+		$win.scroll();
+
 	});
 
 	return this;

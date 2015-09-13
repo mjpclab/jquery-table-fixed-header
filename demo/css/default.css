@@ -1,13 +1,20 @@
-﻿.gridview
+﻿body {
+	margin:10px;
+	padding:10px;
+}
+
+.gridview
 {
-	width:100%;
+	width:90%;
 	border-collapse:collapse;
 	border:10px #ddd solid;
+	margin: 100px;
+	padding: 10%;
 }
 
 .gridview thead
 {
-	background-color:#b5d0f8;	
+	background-color:#b5d0f8;
 }
 
 .gridview tbody tr:nth-child(odd)
