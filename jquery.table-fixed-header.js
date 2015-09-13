@@ -123,10 +123,10 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 
 		$table.data("positioning", false);
 		$win.scroll(function () {
-			fixedTop = getFixedTop();
 			if (!$table.data("positioning")) {
 				$table.data("positioning", true);
 				raf(function () {
+					fixedTop = getFixedTop();
 					$tableCloned.css({
 						"position": "fixed",
 						"top": fixedTop + "px",
