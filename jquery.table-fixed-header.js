@@ -64,7 +64,6 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 
 	this.filter("table").each(function (index, element) {
 		var $table = $(element);
-		var fixedTop;
 
 		$table.data("updating", false);
 		var delaySyncSize = function () {
@@ -100,15 +99,24 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 
 		$table.after($tableCloned);
 
-		$table.data("toggling", false);
-		var switchHeaderVisible = function () {
-			if (!$table.data("toggling")) {
-				$table.data("toggling", true);
+		$table.data("positioning", false);
+		$win.scroll(function () {
+			if (!$table.data("positioning")) {
+				$table.data("positioning", true);
 				raf(function () {
+					var fixedTop = getFixedTop();
+
 					var scrollTop = $win.scrollTop();
 					var visibleTop = scrollTop + fixedTop;
 					var headersTop = $table.offset().top;
 					if ((visibleTop >= headersTop ) && (visibleTop + $tableCloned.outerHeight() <= headersTop + $table.outerHeight())) {
+						$tableCloned.css({
+							"position": "fixed",
+							"top": fixedTop + "px",
+							"left": $table.offset().left - $win.scrollLeft(),
+							"zoom": 1    //for IE7
+						});
+
 						syncSize($headerContainersCloned, $headerContainers);
 						$tableCloned.show();
 						$win.on("resize", delaySyncSize);
@@ -116,24 +124,7 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 						$tableCloned.hide();
 						$win.off("resize", delaySyncSize);
 					}
-					$table.data("toggling", false);
-				});
-			}
-		};
 
-		$table.data("positioning", false);
-		$win.scroll(function () {
-			if (!$table.data("positioning")) {
-				$table.data("positioning", true);
-				raf(function () {
-					fixedTop = getFixedTop();
-					$tableCloned.css({
-						"position": "fixed",
-						"top": fixedTop + "px",
-						"left": $table.offset().left - $win.scrollLeft(),
-						"zoom": 1    //for IE7
-					});
-					switchHeaderVisible();
 					$table.data("positioning", false);
 				});
 			}
