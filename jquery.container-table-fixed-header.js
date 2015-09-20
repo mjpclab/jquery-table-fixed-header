@@ -100,11 +100,6 @@ jQuery.fn.containerTableFixedHeader = function (initOption) {
 				var visibleTop = scrollTop + fixedTop;
 				var headersTop = $table[0].offsetTop;
 				if ((visibleTop >= headersTop ) && (visibleTop + $tableCloned.outerHeight() <= headersTop + $table.outerHeight())) {
-					$tableCloned.css({
-						"top": $scrollContainer.offset().top - $win.scrollTop() + fixedTop + "px",
-						"left": $table.offset().left - $win.scrollLeft() + "px"
-					});
-
 					var clipRight;
 					var tableVisibleWidth = $scrollContainer[0].clientWidth - $table[0].offsetLeft + $scrollContainer.scrollLeft();
 					if (tableVisibleWidth < $table.outerWidth()) {
@@ -121,9 +116,13 @@ jQuery.fn.containerTableFixedHeader = function (initOption) {
 					else {
 						clipLeft = "auto";
 					}
-					$tableCloned.css("clip", "rect(auto " + clipRight + " auto " + clipLeft + ")");
 
-					$tableCloned.css("visibility", "visible");
+					$tableCloned.css({
+						"top": $scrollContainer.offset().top - $win.scrollTop() + fixedTop + "px",
+						"left": $table.offset().left - $win.scrollLeft() + "px",
+						"clip": "rect(auto " + clipRight + " auto " + clipLeft + ")",
+						"visibility": "visible"
+					});
 				} else {
 					$tableCloned.css("visibility", "hidden");
 				}

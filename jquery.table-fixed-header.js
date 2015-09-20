@@ -93,10 +93,9 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 				if ((visibleTop >= headersTop ) && (visibleTop + $tableCloned.outerHeight() <= headersTop + $table.outerHeight())) {
 					$tableCloned.css({
 						"top": fixedTop + "px",
-						"left": $table.offset().left - $win.scrollLeft() + "px"
+						"left": $table.offset().left - $win.scrollLeft() + "px",
+						"visibility": "visible"
 					});
-
-					$tableCloned.css("visibility", "visible");
 				} else {
 					$tableCloned.css("visibility", "hidden");
 				}
