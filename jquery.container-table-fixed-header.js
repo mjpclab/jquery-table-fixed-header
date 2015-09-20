@@ -78,9 +78,14 @@ jQuery.fn.containerTableFixedHeader = function (initOption) {
 		$tableCloned.find("tr").not($headersCloned).remove();
 		$tableCloned.children().not($headerContainersCloned).remove();
 
-		$tableCloned.removeAttr("id").css({"margin": "0", "padding": "0"}).find("[id]").removeAttr("id");
-		$tableCloned.css("table-layout", "fixed").addClass(option.fixedClass);
-		$tableCloned.css("visibility", "hidden");
+		$tableCloned.addClass(option.fixedClass).removeAttr("id").find("[id]").removeAttr("id");
+		$tableCloned.css({
+			"margin": "0",
+			"padding": "0",
+			"table-layout": "fixed",
+			"visibility": "hidden",
+			"position": "fixed"
+		});
 
 		$table.after($tableCloned);
 
@@ -96,10 +101,8 @@ jQuery.fn.containerTableFixedHeader = function (initOption) {
 				var headersTop = $table[0].offsetTop;
 				if ((visibleTop >= headersTop ) && (visibleTop + $tableCloned.outerHeight() <= headersTop + $table.outerHeight())) {
 					$tableCloned.css({
-						"position": "fixed",
 						"top": $scrollContainer.offset().top - $win.scrollTop() + fixedTop + "px",
-						"left": $table.offset().left - $win.scrollLeft(),
-						"zoom": 1    //for IE7
+						"left": $table.offset().left - $win.scrollLeft() + "px"
 					});
 
 					var clipRight;
