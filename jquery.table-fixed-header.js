@@ -81,7 +81,7 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 		$table.after($tableCloned);
 
 		$table.data("positioning", false);
-		var scrollHandler = function (event) {
+		var scrollHandler = function () {
 			if (!$table.data("positioning")) {
 				$table.data("positioning", true);
 				syncWidth($headerContainersCloned, $headerContainers);
@@ -105,6 +105,8 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 		};
 		$win.scroll(scrollHandler);
 		$win.resize(scrollHandler);
+
+		scrollHandler();
 	});
 
 	return this;
