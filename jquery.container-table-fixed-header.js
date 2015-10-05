@@ -32,21 +32,21 @@ jQuery.fn.containerTableFixedHeader = function (initOption) {
 		return $element.width() + parseInt($element.css("padding-left")) + parseInt($element.css("padding-right"));
 	};
 
-	var syncWidth = function ($clonedContainers, $originalContainers) {
-		$clonedContainers.each(function (containerIndex, clonedContainer) {
-			var $clonedContainer = $(clonedContainer);
-			var $originalContainer = $originalContainers.eq(containerIndex);
-			$clonedContainer.parent().width(getActualWidth($originalContainer.parent()));
-			$clonedContainer.width(getActualWidth($originalContainer));
+	var syncWidth = function ($clonedRowGroups, $originalRowGroups) {
+		$clonedRowGroups.each(function (RowGroupIndex, clonedRowGroup) {
+			var $clonedRowGroup = $(clonedRowGroup);
+			var $originalRowGroup = $originalRowGroups.eq(RowGroupIndex);
+			$clonedRowGroup.parent().width(getActualWidth($originalRowGroup.parent()));
+			$clonedRowGroup.width(getActualWidth($originalRowGroup));
 
-			$clonedContainer.children().each(function (headerIndex, clonedHeader) {
-				var $clonedHeader = $(clonedHeader);
-				var $originalHeader = $originalContainer.children().eq(headerIndex);
-				$clonedHeader.width(getActualWidth($originalHeader));
+			$clonedRowGroup.children().each(function (clonedRowIndex, clonedRow) {
+				var $clonedRow = $(clonedRow);
+				var $originalRow = $originalRowGroup.children().eq(clonedRowIndex);
+				$clonedRow.width(getActualWidth($originalRow));
 
-				$clonedHeader.children().each(function (cellIndex, clonedCell) {
+				$clonedRow.children().each(function (clonedCellIndex, clonedCell) {
 					var $clonedCell = $(clonedCell);
-					var $originalCell = $originalHeader.children().eq(cellIndex);
+					var $originalCell = $originalRow.children().eq(clonedCellIndex);
 					$clonedCell.width(getActualWidth($originalCell));
 				});
 			});
@@ -64,19 +64,19 @@ jQuery.fn.containerTableFixedHeader = function (initOption) {
 			$scrollContainer.css("position", "relative");
 		}
 
-		var $headers = findHeader($table);
-		if (!$headers.length) {
+		var $headerRows = findHeader($table);
+		if (!$headerRows.length) {
 			return;
 		}
 
-		var $headerContainers = $headers.parent();
+		var $headerRowGroups = $headerRows.parent();
 
 		var $tableCloned = $table.clone();
-		var $headersCloned = findHeader($tableCloned);
-		var $headerContainersCloned = $headersCloned.parent();
+		var $headerRowsCloned = findHeader($tableCloned);
+		var $headerRowGroupsCloned = $headerRowsCloned.parent();
 
-		$tableCloned.find("tr").not($headersCloned).remove();
-		$tableCloned.children().not($headerContainersCloned).remove();
+		$tableCloned.find("tr").not($headerRowsCloned).remove();
+		$tableCloned.children().not($headerRowGroupsCloned).remove();
 
 		$tableCloned.addClass(option.fixedClass).removeAttr("id").find("[id]").removeAttr("id");
 		$tableCloned.css({
@@ -93,13 +93,13 @@ jQuery.fn.containerTableFixedHeader = function (initOption) {
 		var scrollHandler = function () {
 			if (!$table.data("positioning")) {
 				$table.data("positioning", true);
-				syncWidth($headerContainersCloned, $headerContainers);
+				syncWidth($headerRowGroupsCloned, $headerRowGroups);
 
 				var fixedTop = getFixedTop();
 				var scrollTop = $scrollContainer.scrollTop();
 				var visibleTop = scrollTop + fixedTop;
 				var headersTop = $table[0].offsetTop;
-				if ((visibleTop >= headersTop ) && (visibleTop + $tableCloned.outerHeight() <= headersTop + $table.outerHeight())) {
+				if ((visibleTop >= headersTop) && (visibleTop + $tableCloned.outerHeight() <= headersTop + $table.outerHeight())) {
 					var clipRight;
 					var tableVisibleWidth = $scrollContainer[0].clientWidth - $table[0].offsetLeft + $scrollContainer.scrollLeft();
 					if (tableVisibleWidth < $table.outerWidth()) {
