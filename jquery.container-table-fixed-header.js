@@ -15,6 +15,8 @@ jQuery.fn.containerTableFixedHeader = function (initOption) {
 		option.fixedTop = parseInt(option.fixedTop);
 	}
 
+	var isIE7 = (window.ActiveXObject && window.XMLHttpRequest && !document.documentMode);
+
 	var $win = $(window);
 
 	var getFixedTop = function () {
@@ -26,23 +28,27 @@ jQuery.fn.containerTableFixedHeader = function (initOption) {
 	};
 
 	var getActualWidth = window.getComputedStyle ? function ($element) {
-		return window.getComputedStyle($element[0]).width;
+		return parseFloat(window.getComputedStyle($element[0]).width);
+	} : isIE7 ? function ($element) {
+		var borderLeftWidth = parseInt($element.css("border-left-width")) || 0;
+		var borderRightWidth = parseInt($element.css("border-right-width")) || 0;
+
+		return $element.width() + (borderLeftWidth + borderRightWidth) / 2;
 	} : function ($element) {
-		//for IE8- , the width should including paddings
-		return $element.width() + parseInt($element.css("padding-left")) + parseInt($element.css("padding-right"));
+		return $element.width();
 	};
 
 	var syncWidth = function ($clonedRowGroups, $originalRowGroups) {
 		$clonedRowGroups.each(function (RowGroupIndex, clonedRowGroup) {
 			var $clonedRowGroup = $(clonedRowGroup);
 			var $originalRowGroup = $originalRowGroups.eq(RowGroupIndex);
-			$clonedRowGroup.parent().width(getActualWidth($originalRowGroup.parent()));
-			$clonedRowGroup.width(getActualWidth($originalRowGroup));
+			$clonedRowGroup.parent().width($originalRowGroup.parent().outerWidth());
+			$clonedRowGroup.width($originalRowGroup.outerWidth());
 
 			$clonedRowGroup.children().each(function (clonedRowIndex, clonedRow) {
 				var $clonedRow = $(clonedRow);
 				var $originalRow = $originalRowGroup.children().eq(clonedRowIndex);
-				$clonedRow.width(getActualWidth($originalRow));
+				$clonedRow.width($originalRow.outerWidth());
 
 				$clonedRow.children().each(function (clonedCellIndex, clonedCell) {
 					var $clonedCell = $(clonedCell);
