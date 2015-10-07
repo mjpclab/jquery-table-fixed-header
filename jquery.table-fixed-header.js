@@ -38,16 +38,14 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 	};
 
 	var syncWidth = function ($clonedRowGroups, $originalRowGroups) {
-		$clonedRowGroups.each(function (RowGroupIndex, clonedRowGroup) {
+		$clonedRowGroups.each(function (rowGroupIndex, clonedRowGroup) {
 			var $clonedRowGroup = $(clonedRowGroup);
-			var $originalRowGroup = $originalRowGroups.eq(RowGroupIndex);
+			var $originalRowGroup = $originalRowGroups.eq(rowGroupIndex);
 			$clonedRowGroup.parent().width($originalRowGroup.parent().outerWidth());
-			$clonedRowGroup.width($originalRowGroup.outerWidth());
 
 			$clonedRowGroup.children().each(function (clonedRowIndex, clonedRow) {
 				var $clonedRow = $(clonedRow);
 				var $originalRow = $originalRowGroup.children().eq(clonedRowIndex);
-				$clonedRow.width($originalRow.outerWidth());
 
 				$clonedRow.children().each(function (clonedCellIndex, clonedCell) {
 					var $clonedCell = $(clonedCell);
