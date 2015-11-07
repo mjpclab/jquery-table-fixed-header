@@ -1,6 +1,12 @@
 jQuery.fn.containerTableFixedHeader = function (initOption) {
 	"use strict";
 
+	var isIE6 = (window.ActiveXObject && !window.XMLHttpRequest);
+	if(isIE6) {
+		return this;
+	}
+	var isIE7 = (window.ActiveXObject && window.XMLHttpRequest && !document.documentMode);
+
 	var $ = jQuery;
 
 	var defaultOption = {
@@ -14,8 +20,6 @@ jQuery.fn.containerTableFixedHeader = function (initOption) {
 	if (typeof(option.fixedTop) !== "function") {
 		option.fixedTop = parseInt(option.fixedTop);
 	}
-
-	var isIE7 = (window.ActiveXObject && window.XMLHttpRequest && !document.documentMode);
 
 	var $win = $(window);
 
