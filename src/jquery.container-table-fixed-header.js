@@ -1,4 +1,4 @@
-jQuery.fn.containerTableFixedHeader = function (initOption) {
+jQuery.fn.containerTableFixedHeader = function (customOptions) {
 	"use strict";
 
 	var isIE6 = (window.ActiveXObject && !window.XMLHttpRequest);
@@ -9,26 +9,26 @@ jQuery.fn.containerTableFixedHeader = function (initOption) {
 
 	var $ = jQuery;
 
-	var defaultOption = {
+	var defaultOptions = {
 		headerRows: 1,
 		fixedClass: "container-table-fixed-header",
 		fixedTop: 0,
 		scrollContainer: ""
 	};
 
-	var option = $.extend({}, defaultOption, initOption);
-	if (typeof(option.fixedTop) !== "function") {
-		option.fixedTop = parseInt(option.fixedTop);
+	var options = $.extend({}, defaultOptions, customOptions);
+	if (typeof(options.fixedTop) !== "function") {
+		options.fixedTop = parseInt(options.fixedTop);
 	}
 
 	var $win = $(window);
 
 	var getFixedTop = function () {
-		return typeof(option.fixedTop) === "function" ? option.fixedTop() : option.fixedTop;
+		return typeof(options.fixedTop) === "function" ? options.fixedTop() : options.fixedTop;
 	};
 
 	var findHeader = function ($table) {
-		return $table.find("tr:lt(" + option.headerRows + ")");
+		return $table.find("tr:lt(" + options.headerRows + ")");
 	};
 
 	var getActualWidth = window.getComputedStyle ? function ($element) {
@@ -64,7 +64,7 @@ jQuery.fn.containerTableFixedHeader = function (initOption) {
 	this.filter("table").each(function (index, element) {
 		var $table = $(element);
 
-		var $scrollContainer = $table.closest(option.scrollContainer).eq(0);
+		var $scrollContainer = $table.closest(options.scrollContainer).eq(0);
 		if (!$scrollContainer.length) {
 			return;
 		}
@@ -86,7 +86,7 @@ jQuery.fn.containerTableFixedHeader = function (initOption) {
 		$tableCloned.find("tr").not($headerRowsCloned).remove();
 		$tableCloned.children().not($headerRowGroupsCloned).remove();
 
-		$tableCloned.addClass(option.fixedClass).removeAttr("id").find("[id]").removeAttr("id");
+		$tableCloned.addClass(options.fixedClass).removeAttr("id").find("[id]").removeAttr("id");
 		$tableCloned.css({
 			"margin": "0",
 			"padding": "0",

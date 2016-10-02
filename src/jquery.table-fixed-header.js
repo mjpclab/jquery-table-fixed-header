@@ -1,33 +1,33 @@
-jQuery.fn.tableFixedHeader = function (initOption) {
+jQuery.fn.tableFixedHeader = function (customOptions) {
 	"use strict";
 
 	var isIE6 = (window.ActiveXObject && !window.XMLHttpRequest);
-	if(isIE6) {
+	if (isIE6) {
 		return this;
 	}
 	var isIE7 = (window.ActiveXObject && window.XMLHttpRequest && !document.documentMode);
 
 	var $ = jQuery;
 
-	var defaultOption = {
+	var defaultOptions = {
 		headerRows: 1,
 		fixedClass: "table-fixed-header",
 		fixedTop: 0
 	};
 
-	var option = $.extend({}, defaultOption, initOption);
-	if (typeof(option.fixedTop) !== "function") {
-		option.fixedTop = parseInt(option.fixedTop);
+	var options = $.extend({}, defaultOptions, customOptions);
+	if (typeof(options.fixedTop) !== "function") {
+		options.fixedTop = parseInt(options.fixedTop);
 	}
 
 	var $win = $(window);
 
 	var getFixedTop = function () {
-		return typeof(option.fixedTop) === "function" ? option.fixedTop() : option.fixedTop;
+		return typeof(options.fixedTop) === "function" ? options.fixedTop() : options.fixedTop;
 	};
 
 	var findHeader = function ($table) {
-		return $table.find("tr:lt(" + option.headerRows + ")");
+		return $table.find("tr:lt(" + options.headerRows + ")");
 	};
 
 	var getActualWidth = window.getComputedStyle ? function ($element) {
@@ -77,7 +77,7 @@ jQuery.fn.tableFixedHeader = function (initOption) {
 		$tableCloned.find("tr").not($headerRowsCloned).remove();
 		$tableCloned.children().not($headerRowGroupsCloned).remove();
 
-		$tableCloned.addClass(option.fixedClass).removeAttr("id").find("[id]").removeAttr("id");
+		$tableCloned.addClass(options.fixedClass).removeAttr("id").find("[id]").removeAttr("id");
 		$tableCloned.css({
 			"margin": "0",
 			"padding": "0",
