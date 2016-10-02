@@ -1,5 +1,5 @@
 jQuery.fn.tableFixedHeader = function (customOptions) {
-	"use strict";
+	'use strict';
 
 	var isIE6 = (window.ActiveXObject && !window.XMLHttpRequest);
 	if (isIE6) {
@@ -11,30 +11,30 @@ jQuery.fn.tableFixedHeader = function (customOptions) {
 
 	var defaultOptions = {
 		headerRows: 1,
-		fixedClass: "table-fixed-header",
+		fixedClass: 'table-fixed-header',
 		fixedTop: 0
 	};
 
 	var options = $.extend({}, defaultOptions, customOptions);
-	if (typeof(options.fixedTop) !== "function") {
+	if (typeof(options.fixedTop) !== 'function') {
 		options.fixedTop = parseInt(options.fixedTop);
 	}
 
 	var $win = $(window);
 
 	var getFixedTop = function () {
-		return typeof(options.fixedTop) === "function" ? options.fixedTop() : options.fixedTop;
+		return typeof(options.fixedTop) === 'function' ? options.fixedTop() : options.fixedTop;
 	};
 
 	var findHeader = function ($table) {
-		return $table.find("tr:lt(" + options.headerRows + ")");
+		return $table.find('tr:lt(' + options.headerRows + ')');
 	};
 
 	var getActualWidth = window.getComputedStyle ? function ($element) {
 		return parseFloat(window.getComputedStyle($element[0]).width);
 	} : isIE7 ? function ($element) {
-		var borderLeftWidth = parseInt($element.css("border-left-width")) || 0;
-		var borderRightWidth = parseInt($element.css("border-right-width")) || 0;
+		var borderLeftWidth = parseInt($element.css('border-left-width')) || 0;
+		var borderRightWidth = parseInt($element.css('border-right-width')) || 0;
 
 		return $element.width() + (borderLeftWidth + borderRightWidth) / 2;
 	} : function ($element) {
@@ -60,7 +60,7 @@ jQuery.fn.tableFixedHeader = function (customOptions) {
 		});
 	};
 
-	this.filter("table").each(function (index, element) {
+	this.filter('table').each(function (index, element) {
 		var $table = $(element);
 
 		var $headerRows = findHeader($table);
@@ -74,24 +74,24 @@ jQuery.fn.tableFixedHeader = function (customOptions) {
 		var $headerRowsCloned = findHeader($tableCloned);
 		var $headerRowGroupsCloned = $headerRowsCloned.parent();
 
-		$tableCloned.find("tr").not($headerRowsCloned).remove();
+		$tableCloned.find('tr').not($headerRowsCloned).remove();
 		$tableCloned.children().not($headerRowGroupsCloned).remove();
 
-		$tableCloned.addClass(options.fixedClass).removeAttr("id").find("[id]").removeAttr("id");
+		$tableCloned.addClass(options.fixedClass).removeAttr('id').find('[id]').removeAttr('id');
 		$tableCloned.css({
-			"margin": "0",
-			"padding": "0",
-			"table-layout": "fixed",
-			"visibility": "hidden",
-			"position": "fixed"
+			'margin': '0',
+			'padding': '0',
+			'table-layout': 'fixed',
+			'visibility': 'hidden',
+			'position': 'fixed'
 		});
 
 		$table.after($tableCloned);
 
-		$table.data("positioning", false);
+		$table.data('positioning', false);
 		var scrollHandler = function () {
-			if (!$table.data("positioning")) {
-				$table.data("positioning", true);
+			if (!$table.data('positioning')) {
+				$table.data('positioning', true);
 				syncWidth($headerRowGroupsCloned, $headerRowGroups);
 
 				var fixedTop = getFixedTop();
@@ -100,15 +100,15 @@ jQuery.fn.tableFixedHeader = function (customOptions) {
 				var headersTop = $table.offset().top;
 				if ((visibleTop >= headersTop) && (visibleTop + $tableCloned.outerHeight() <= headersTop + $table.outerHeight())) {
 					$tableCloned.css({
-						"top": fixedTop + "px",
-						"left": $table.offset().left - $win.scrollLeft() + "px",
-						"visibility": "visible"
+						'top': fixedTop + 'px',
+						'left': $table.offset().left - $win.scrollLeft() + 'px',
+						'visibility': 'visible'
 					});
 				} else {
-					$tableCloned.css("visibility", "hidden");
+					$tableCloned.css('visibility', 'hidden');
 				}
 
-				$table.data("positioning", false);
+				$table.data('positioning', false);
 			}
 		};
 		$win.scroll(scrollHandler);

@@ -1,8 +1,8 @@
 jQuery.fn.containerTableFixedHeader = function (customOptions) {
-	"use strict";
+	'use strict';
 
 	var isIE6 = (window.ActiveXObject && !window.XMLHttpRequest);
-	if(isIE6) {
+	if (isIE6) {
 		return this;
 	}
 	var isIE7 = (window.ActiveXObject && window.XMLHttpRequest && !document.documentMode);
@@ -11,31 +11,31 @@ jQuery.fn.containerTableFixedHeader = function (customOptions) {
 
 	var defaultOptions = {
 		headerRows: 1,
-		fixedClass: "container-table-fixed-header",
+		fixedClass: 'container-table-fixed-header',
 		fixedTop: 0,
-		scrollContainer: ""
+		scrollContainer: ''
 	};
 
 	var options = $.extend({}, defaultOptions, customOptions);
-	if (typeof(options.fixedTop) !== "function") {
+	if (typeof(options.fixedTop) !== 'function') {
 		options.fixedTop = parseInt(options.fixedTop);
 	}
 
 	var $win = $(window);
 
 	var getFixedTop = function () {
-		return typeof(options.fixedTop) === "function" ? options.fixedTop() : options.fixedTop;
+		return typeof(options.fixedTop) === 'function' ? options.fixedTop() : options.fixedTop;
 	};
 
 	var findHeader = function ($table) {
-		return $table.find("tr:lt(" + options.headerRows + ")");
+		return $table.find('tr:lt(' + options.headerRows + ')');
 	};
 
 	var getActualWidth = window.getComputedStyle ? function ($element) {
 		return parseFloat(window.getComputedStyle($element[0]).width);
 	} : isIE7 ? function ($element) {
-		var borderLeftWidth = parseInt($element.css("border-left-width")) || 0;
-		var borderRightWidth = parseInt($element.css("border-right-width")) || 0;
+		var borderLeftWidth = parseInt($element.css('border-left-width')) || 0;
+		var borderRightWidth = parseInt($element.css('border-right-width')) || 0;
 
 		return $element.width() + (borderLeftWidth + borderRightWidth) / 2;
 	} : function ($element) {
@@ -61,15 +61,15 @@ jQuery.fn.containerTableFixedHeader = function (customOptions) {
 		});
 	};
 
-	this.filter("table").each(function (index, element) {
+	this.filter('table').each(function (index, element) {
 		var $table = $(element);
 
 		var $scrollContainer = $table.closest(options.scrollContainer).eq(0);
 		if (!$scrollContainer.length) {
 			return;
 		}
-		if ($scrollContainer.css("position") === "" || $scrollContainer.css("position") === "static") {
-			$scrollContainer.css("position", "relative");
+		if ($scrollContainer.css('position') === '' || $scrollContainer.css('position') === 'static') {
+			$scrollContainer.css('position', 'relative');
 		}
 
 		var $headerRows = findHeader($table);
@@ -83,24 +83,24 @@ jQuery.fn.containerTableFixedHeader = function (customOptions) {
 		var $headerRowsCloned = findHeader($tableCloned);
 		var $headerRowGroupsCloned = $headerRowsCloned.parent();
 
-		$tableCloned.find("tr").not($headerRowsCloned).remove();
+		$tableCloned.find('tr').not($headerRowsCloned).remove();
 		$tableCloned.children().not($headerRowGroupsCloned).remove();
 
-		$tableCloned.addClass(options.fixedClass).removeAttr("id").find("[id]").removeAttr("id");
+		$tableCloned.addClass(options.fixedClass).removeAttr('id').find('[id]').removeAttr('id');
 		$tableCloned.css({
-			"margin": "0",
-			"padding": "0",
-			"table-layout": "fixed",
-			"visibility": "hidden",
-			"position": "fixed"
+			'margin': '0',
+			'padding': '0',
+			'table-layout': 'fixed',
+			'visibility': 'hidden',
+			'position': 'fixed'
 		});
 
 		$table.after($tableCloned);
 
-		$table.data("positioning", false);
+		$table.data('positioning', false);
 		var scrollHandler = function () {
-			if (!$table.data("positioning")) {
-				$table.data("positioning", true);
+			if (!$table.data('positioning')) {
+				$table.data('positioning', true);
 				syncWidth($headerRowGroupsCloned, $headerRowGroups);
 
 				var fixedTop = getFixedTop();
@@ -111,30 +111,30 @@ jQuery.fn.containerTableFixedHeader = function (customOptions) {
 					var clipRight;
 					var tableVisibleWidth = $scrollContainer[0].clientWidth - $table[0].offsetLeft + $scrollContainer.scrollLeft();
 					if (tableVisibleWidth < $table.outerWidth()) {
-						clipRight = tableVisibleWidth + "px";
+						clipRight = tableVisibleWidth + 'px';
 					}
 					else {
-						clipRight = "auto";
+						clipRight = 'auto';
 					}
 					var clipLeft;
 					var tableInvisibleLeft = $scrollContainer.scrollLeft() - $table[0].offsetLeft;
 					if (tableInvisibleLeft > 0) {
-						clipLeft = tableInvisibleLeft + "px";
+						clipLeft = tableInvisibleLeft + 'px';
 					}
 					else {
-						clipLeft = "auto";
+						clipLeft = 'auto';
 					}
 
 					$tableCloned.css({
-						"top": $scrollContainer.offset().top - $win.scrollTop() + fixedTop + "px",
-						"left": $table.offset().left - $win.scrollLeft() + "px",
-						"clip": "rect(auto " + clipRight + " auto " + clipLeft + ")",
-						"visibility": "visible"
+						'top': $scrollContainer.offset().top - $win.scrollTop() + fixedTop + 'px',
+						'left': $table.offset().left - $win.scrollLeft() + 'px',
+						'clip': 'rect(auto ' + clipRight + ' auto ' + clipLeft + ')',
+						'visibility': 'visible'
 					});
 				} else {
-					$tableCloned.css("visibility", "hidden");
+					$tableCloned.css('visibility', 'hidden');
 				}
-				$table.data("positioning", false);
+				$table.data('positioning', false);
 			}
 		};
 		$scrollContainer.scroll(scrollHandler);
