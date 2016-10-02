@@ -28,7 +28,7 @@ The number of leading rows from table that will be fixed.
 CSS class for fixed header.
 
 `fixedTop`  
-Top offset of the fixed header. Can be a distance value or a function that returns value. Useful if you already have a fixed page header.
+Top offset of the fixed header. Can be a number (of pixels) or a function that returns the value. Useful if you already have a fixed page header.
 
 `scrollContainer`(Container version only)  
 Determine the parent scroll container. Fixed header will locate based on that container.
