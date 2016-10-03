@@ -556,12 +556,14 @@
 <p>text ...</p>
 
 
+<script type="text/javascript" src="js/require.js"></script>
 <!--<script language="JavaScript" type="text/javascript" src="../node_modules/jquery/dist/jquery.js"></script>-->
 <script language="JavaScript" type="text/javascript" src="js/jquery-1.7.2.js"></script>
-<script language="JavaScript" type="text/javascript" src="../src/jquery.table-fixed-header.js"></script>
 <script type="text/javascript">
-	$(function ($) {
-		$('#table1').tableFixedHeader();
+	require(['../src/jquery.table-fixed-header'],function($){
+		$(function ($) {
+			$('#table1').tableFixedHeader();
+		});
 	});
 </script>
 </body>
