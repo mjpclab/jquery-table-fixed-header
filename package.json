@@ -4,7 +4,9 @@
 	"description": "A jQuery plugin to make table header fixed on the top when scrolling down.",
 	"main": "src/jquery.table-fixed-header.js",
 	"dependencies": {
-		"jquery": "*",
+		"jquery": "*"
+	},
+	"devDependencies": {
 		"grunt": "*",
 		"grunt-contrib-jshint": "*",
 		"grunt-contrib-clean": "*",
