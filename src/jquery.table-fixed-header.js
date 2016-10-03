@@ -4,7 +4,7 @@
 	if (typeof define === 'function' && define.amd) {
 		define(['jquery'], factory);
 	}
-	else if (typeof(module) !== 'undefined' && module.exports) {
+	else if (typeof module !== 'undefined' && module.exports) {
 		module.exports = factory;
 	}
 	else if (root.jQuery) {
@@ -17,8 +17,6 @@
 			return this;
 		}
 		var isIE7 = (window.ActiveXObject && window.XMLHttpRequest && !document.documentMode);
-
-		var $ = jQuery;
 
 		var defaultOptions = {
 			headerRows: 1,
