@@ -1,16 +1,15 @@
-(function (root, factory) {
-	'use strict';
-
+(function(factory, undefined) {
 	if (typeof define === 'function' && define.amd) {
+		// AMD
 		define(['jquery'], factory);
+	} else if (typeof module === 'object' && typeof module.exports === 'object') {
+		// CommonJS
+		module.exports = factory(require('jquery'));
+	} else {
+		// Global jQuery
+		factory(jQuery);
 	}
-	else if (typeof module !== 'undefined' && module.exports) {
-		module.exports = factory;
-	}
-	else if (root.jQuery) {
-		factory(root.jQuery);
-	}
-}(this, function ($) {
+}(function($, undefined) {
 	$.fn.containerTableFixedHeader = function (customOptions) {
 		var isIE6 = (window.ActiveXObject && !window.XMLHttpRequest);
 		if (isIE6) {
