@@ -1,6 +1,6 @@
 "use strict";
 var $ = require("jquery");
-$.fn.containerTableFixedHeader = function (customOptions) {
+$.fn.tableFixedHeader = function (customOptions) {
     var isIE6 = (window.ActiveXObject && !window.XMLHttpRequest);
     if (isIE6) {
         return this;
@@ -8,9 +8,8 @@ $.fn.containerTableFixedHeader = function (customOptions) {
     var isIE7 = (window.ActiveXObject && window.XMLHttpRequest && !document.documentMode);
     var defaultOptions = {
         headerRows: 1,
-        fixedClass: 'container-table-fixed-header',
-        fixedTop: 0,
-        scrollContainer: ''
+        fixedClass: 'table-fixed-header',
+        fixedTop: 0
     };
     var options = $.extend({}, defaultOptions, customOptions);
     if (typeof (options.fixedTop) !== 'function') {
@@ -51,13 +50,6 @@ $.fn.containerTableFixedHeader = function (customOptions) {
     };
     this.filter('table').each(function (index, element) {
         var $table = $(element);
-        var $scrollContainer = $table.closest(options.scrollContainer).eq(0);
-        if (!$scrollContainer.length) {
-            return;
-        }
-        if ($scrollContainer.css('position') === '' || $scrollContainer.css('position') === 'static') {
-            $scrollContainer.css('position', 'relative');
-        }
         var $headerRows = findHeader($table);
         if (!$headerRows.length) {
             return;
@@ -83,30 +75,13 @@ $.fn.containerTableFixedHeader = function (customOptions) {
                 $table.data('positioning', true);
                 syncWidth($headerRowGroupsCloned, $headerRowGroups);
                 var fixedTop = getFixedTop();
-                var scrollTop = $scrollContainer.scrollTop();
+                var scrollTop = $win.scrollTop();
                 var visibleTop = scrollTop + fixedTop;
-                var headersTop = $table[0].offsetTop;
+                var headersTop = $table.offset().top;
                 if ((visibleTop >= headersTop) && (visibleTop + ($tableCloned.outerHeight()) <= headersTop + $table.outerHeight())) {
-                    var clipRight = void 0;
-                    var tableVisibleWidth = $scrollContainer[0].clientWidth - $table[0].offsetLeft + $scrollContainer.scrollLeft();
-                    if (tableVisibleWidth < $table.outerWidth()) {
-                        clipRight = tableVisibleWidth + 'px';
-                    }
-                    else {
-                        clipRight = 'auto';
-                    }
-                    var clipLeft = void 0;
-                    var tableInvisibleLeft = $scrollContainer.scrollLeft() - $table[0].offsetLeft;
-                    if (tableInvisibleLeft > 0) {
-                        clipLeft = tableInvisibleLeft + 'px';
-                    }
-                    else {
-                        clipLeft = 'auto';
-                    }
                     $tableCloned.css({
-                        'top': $scrollContainer.offset().top - $win.scrollTop() + fixedTop + 'px',
+                        'top': fixedTop + 'px',
                         'left': $table.offset().left - $win.scrollLeft() + 'px',
-                        'clip': 'rect(auto ' + clipRight + ' auto ' + clipLeft + ')',
                         'visibility': 'visible'
                     });
                 }
@@ -116,7 +91,6 @@ $.fn.containerTableFixedHeader = function (customOptions) {
                 $table.data('positioning', false);
             }
         };
-        $scrollContainer.scroll(scrollHandler);
         $win.scroll(scrollHandler);
         $win.resize(scrollHandler);
         scrollHandler();
