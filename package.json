@@ -1,29 +1,26 @@
 {
-	"name": "jquery-table-fixed-header",
-	"version": "0.1.1",
-	"description": "A jQuery plugin to make table header fixed on the top when scrolling down.",
-	"main": "src/jquery.table-fixed-header.js",
-	"dependencies": {
-		"jquery": "*"
-	},
-	"devDependencies": {
-		"jsdom": "*",
-		"grunt": "*",
-		"grunt-contrib-jshint": "*",
-		"grunt-contrib-clean": "*",
-		"grunt-contrib-copy": "*",
-		"grunt-contrib-uglify": "*"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/mjpclab/jquery-table-fixed-header.git"
-	},
-	"keywords": [
-		"jquery",
-		"table",
-		"fixed",
-		"header"
-	],
-	"author": "MJ PC Lab",
-	"license": "ISC"
+  "name": "jquery-table-fixed-header",
+  "nameContainer": "jquery-container-table-fixed-header",
+  "version": "0.2.0",
+  "description": "A jQuery plugin to make table header fixed on the top when scrolling down.",
+  "main": "src/jquery-table-fixed-header.js",
+  "mainContainer": "src/jquery-container-table-fixed-header.js",
+  "dependencies": {
+    "jquery": "*"
+  },
+  "devDependencies": {
+    "webpack": "^3.5.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mjpclab/jquery-table-fixed-header.git"
+  },
+  "keywords": [
+    "jquery",
+    "table",
+    "fixed",
+    "header"
+  ],
+  "author": "MJ PC Lab",
+  "license": "ISC"
 }
