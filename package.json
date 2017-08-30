@@ -1,6 +1,6 @@
 {
   "name": "jquery-table-fixed-header",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "A jQuery plugin to make table header fixed on the top when scrolling down.",
   "main": "src/js/main.js",
   "types": "src/ts/index.d.ts",
@@ -25,7 +25,7 @@
   ],
   "scripts": {
     "ts": "tsc -p src/ts/",
-    "build": "sh -c 'rm -rf dist/*; tsc -p src/ts/; webpack;'"
+    "build": "sh -c 'rm -rf dist/* src/js/*; tsc -p src/ts/; webpack;'"
   },
   "author": "MJ PC Lab",
   "license": "ISC"

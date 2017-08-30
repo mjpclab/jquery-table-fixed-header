@@ -1,19 +1,14 @@
 import * as $ from 'jquery';
+import * as utility from './utility';
 
-function regularTableFixedHeader(this:JQuery, customOptions?: IJQueryTableFixedHeaderOptions) {
-	const isIE6 = (window.ActiveXObject && !window.XMLHttpRequest);
-	if (isIE6) {
-		return this;
-	}
-	const isIE7 = (window.ActiveXObject && window.XMLHttpRequest && !document.documentMode);
-
+function regularTableFixedHeader(this: JQuery, customOptions?: IJQueryTableFixedHeaderOptions) {
 	const defaultOptions: IJQueryTableFixedHeaderOptions = {
 		headerRows: 1,
 		fixedClass: 'table-fixed-header',
 		fixedTop: 0
 	};
 
-	const options = $.extend({}, defaultOptions, customOptions);
+	const options = $.extend({}, defaultOptions, customOptions) as IJQueryTableFixedHeaderOptions;
 	if (typeof (options.fixedTop) !== 'function') {
 		options.fixedTop = parseInt(options.fixedTop);
 	}
@@ -28,39 +23,10 @@ function regularTableFixedHeader(this:JQuery, customOptions?: IJQueryTableFixedH
 		return $table.find('tr:lt(' + options.headerRows + ')');
 	};
 
-	const getActualWidth = window.getComputedStyle ? function ($element: JQuery) {
-		const width = window.getComputedStyle($element[0]).width;
-		return parseFloat(width!);
-	} : isIE7 ? function ($element: JQuery) {
-		const borderLeftWidth = parseInt($element.css('border-left-width')) || 0;
-		const borderRightWidth = parseInt($element.css('border-right-width')) || 0;
-
-		return $element.width()! + (borderLeftWidth + borderRightWidth) / 2;
-	} : function ($element: JQuery) {
-		return $element.width()!;
-	};
-
-	const syncWidth = function ($clonedRowGroups: JQuery, $originalRowGroups: JQuery) {
-		$clonedRowGroups.each(function (rowGroupIndex, clonedRowGroup) {
-			const $clonedRowGroup = $(clonedRowGroup);
-			const $originalRowGroup = $originalRowGroups.eq(rowGroupIndex);
-			$clonedRowGroup.parent().width($originalRowGroup.parent().outerWidth()!);
-
-			$clonedRowGroup.children().each(function (clonedRowIndex, clonedRow) {
-				const $clonedRow = $(clonedRow);
-				const $originalRow = $originalRowGroup.children().eq(clonedRowIndex);
-
-				$clonedRow.children().each(function (clonedCellIndex, clonedCell) {
-					const $clonedCell = $(clonedCell);
-					const $originalCell = $originalRow.children().eq(clonedCellIndex);
-					$clonedCell.width(getActualWidth($originalCell));
-				});
-			});
-		});
-	};
-
 	this.filter('table').each(function (index, element) {
 		const $table = $(element);
+
+		const $scrollContainer = $win;
 
 		const $headerRows = findHeader($table);
 		if (!$headerRows.length) {
@@ -77,13 +43,7 @@ function regularTableFixedHeader(this:JQuery, customOptions?: IJQueryTableFixedH
 		$tableCloned.children().not($headerRowGroupsCloned).remove();
 
 		$tableCloned.addClass(options.fixedClass).removeAttr('id').find('[id]').removeAttr('id');
-		$tableCloned.css({
-			'margin': '0',
-			'padding': '0',
-			'table-layout': 'fixed',
-			'visibility': 'hidden',
-			'position': 'fixed'
-		});
+		$tableCloned.css(utility.defaultClonedStyle);
 
 		$table.after($tableCloned);
 
@@ -91,10 +51,10 @@ function regularTableFixedHeader(this:JQuery, customOptions?: IJQueryTableFixedH
 		const scrollHandler = function () {
 			if (!$table.data('positioning')) {
 				$table.data('positioning', true);
-				syncWidth($headerRowGroupsCloned, $headerRowGroups);
+				utility.syncWidth($headerRowGroupsCloned, $headerRowGroups);
 
 				const fixedTop = getFixedTop();
-				const scrollTop = $win.scrollTop()!;
+				const scrollTop = $scrollContainer.scrollTop()!;
 				const visibleTop = scrollTop + fixedTop;
 				const headersTop = $table.offset()!.top;
 				if ((visibleTop >= headersTop) && (visibleTop + ($tableCloned.outerHeight()!) <= headersTop + $table.outerHeight()!)) {

@@ -30,5 +30,5 @@ CSS class for fixed header.
 `fixedTop`  
 Top offset of the fixed header. Can be a number (of pixels) or a function that returns the value. Useful if you already have a fixed page header.
 
-`scrollContainer`(Container version only)  
+`scrollContainer`  
 Determine the parent scroll container. Fixed header will locate based on that container.
