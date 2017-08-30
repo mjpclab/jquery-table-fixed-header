@@ -1,7 +1,7 @@
 "use strict";
 exports.__esModule = true;
-exports.isIE6 = (window.ActiveXObject && !window.XMLHttpRequest);
-exports.isIE7 = (window.ActiveXObject && window.XMLHttpRequest && !document.documentMode);
+exports.isIE6 = Boolean(window.ActiveXObject && !window.XMLHttpRequest);
+exports.isIE7 = Boolean(window.ActiveXObject && window.XMLHttpRequest && !document.documentMode);
 exports.getActualWidth = window.getComputedStyle ? function ($element) {
     var width = window.getComputedStyle($element[0]).width;
     return parseFloat(width);

@@ -1,6 +1,6 @@
-export const isIE6 = (window.ActiveXObject && !window.XMLHttpRequest);
+export const isIE6 = Boolean(window.ActiveXObject && !window.XMLHttpRequest);
 
-export const isIE7 = (window.ActiveXObject && window.XMLHttpRequest && !document.documentMode);
+export const isIE7 = Boolean(window.ActiveXObject && window.XMLHttpRequest && !document.documentMode);
 
 export const getActualWidth = window.getComputedStyle ? function ($element: JQuery) {
 	const width = window.getComputedStyle($element[0]).width;
