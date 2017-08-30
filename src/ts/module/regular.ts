@@ -1,17 +1,16 @@
-import $ = require('jquery');
+import * as $ from 'jquery';
 
-$.fn.containerTableFixedHeader = function (customOptions: IJQueryContainerTableFixedHeaderOptions) {
+function regularTableFixedHeader(this:JQuery, customOptions?: IJQueryTableFixedHeaderOptions) {
 	const isIE6 = (window.ActiveXObject && !window.XMLHttpRequest);
 	if (isIE6) {
 		return this;
 	}
 	const isIE7 = (window.ActiveXObject && window.XMLHttpRequest && !document.documentMode);
 
-	const defaultOptions: IJQueryContainerTableFixedHeaderOptions = {
+	const defaultOptions: IJQueryTableFixedHeaderOptions = {
 		headerRows: 1,
-		fixedClass: 'container-table-fixed-header',
-		fixedTop: 0,
-		scrollContainer: ''
+		fixedClass: 'table-fixed-header',
+		fixedTop: 0
 	};
 
 	const options = $.extend({}, defaultOptions, customOptions);
@@ -63,14 +62,6 @@ $.fn.containerTableFixedHeader = function (customOptions: IJQueryContainerTableF
 	this.filter('table').each(function (index, element) {
 		const $table = $(element);
 
-		const $scrollContainer = $table.closest(options.scrollContainer).eq(0);
-		if (!$scrollContainer.length) {
-			return;
-		}
-		if ($scrollContainer.css('position') === '' || $scrollContainer.css('position') === 'static') {
-			$scrollContainer.css('position', 'relative');
-		}
-
 		const $headerRows = findHeader($table);
 		if (!$headerRows.length) {
 			return;
@@ -103,40 +94,22 @@ $.fn.containerTableFixedHeader = function (customOptions: IJQueryContainerTableF
 				syncWidth($headerRowGroupsCloned, $headerRowGroups);
 
 				const fixedTop = getFixedTop();
-				const scrollTop = $scrollContainer.scrollTop()!;
+				const scrollTop = $win.scrollTop()!;
 				const visibleTop = scrollTop + fixedTop;
-				const headersTop = $table[0].offsetTop;
+				const headersTop = $table.offset()!.top;
 				if ((visibleTop >= headersTop) && (visibleTop + ($tableCloned.outerHeight()!) <= headersTop + $table.outerHeight()!)) {
-					let clipRight;
-					const tableVisibleWidth = $scrollContainer[0].clientWidth - $table[0].offsetLeft + $scrollContainer.scrollLeft()!;
-					if (tableVisibleWidth < $table.outerWidth()!) {
-						clipRight = tableVisibleWidth + 'px';
-					}
-					else {
-						clipRight = 'auto';
-					}
-					let clipLeft;
-					const tableInvisibleLeft = $scrollContainer.scrollLeft()! - $table[0].offsetLeft;
-					if (tableInvisibleLeft > 0) {
-						clipLeft = tableInvisibleLeft + 'px';
-					}
-					else {
-						clipLeft = 'auto';
-					}
-
 					$tableCloned.css({
-						'top': $scrollContainer.offset()!.top - $win.scrollTop()! + fixedTop + 'px',
+						'top': fixedTop + 'px',
 						'left': $table.offset()!.left - $win.scrollLeft()! + 'px',
-						'clip': 'rect(auto ' + clipRight + ' auto ' + clipLeft + ')',
 						'visibility': 'visible'
 					});
 				} else {
 					$tableCloned.css('visibility', 'hidden');
 				}
+
 				$table.data('positioning', false);
 			}
 		};
-		$scrollContainer.scroll(scrollHandler);
 		$win.scroll(scrollHandler);
 		$win.resize(scrollHandler);
 
@@ -146,4 +119,5 @@ $.fn.containerTableFixedHeader = function (customOptions: IJQueryContainerTableF
 	return this;
 };
 
-export = $;
+export { regularTableFixedHeader }
+export default regularTableFixedHeader;

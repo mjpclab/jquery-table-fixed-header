@@ -8,7 +8,6 @@ const thePackage = JSON.parse(fs.readFileSync(PACKAGE_FILE));
 const getEntryConfig = function () {
 	return {
 		[thePackage.name]: path.resolve(__dirname, thePackage.main),
-		[thePackage.nameContainer]: path.resolve(__dirname, thePackage.mainContainer)
 	}
 };
 

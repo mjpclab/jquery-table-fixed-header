@@ -8,14 +8,9 @@ interface IJQueryTableFixedHeaderOptions {
 	headerRows: number;
 	fixedClass: string;
 	fixedTop: number | (() => number);
-}
-
-interface IJQueryContainerTableFixedHeaderOptions extends IJQueryTableFixedHeaderOptions {
-	scrollContainer: JQuery.Selector | Element | JQuery;
+	scrollContainer?: JQuery.Selector | Element | JQuery;
 }
 
 interface JQuery {
 	tableFixedHeader(options?: IJQueryTableFixedHeaderOptions): JQuery;
-
-	containerTableFixedHeader(options?: IJQueryContainerTableFixedHeaderOptions): JQuery;
 }
