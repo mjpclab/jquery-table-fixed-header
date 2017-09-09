@@ -12,6 +12,20 @@ exports.getActualWidth = window.getComputedStyle ? function ($element) {
 } : function ($element) {
     return $element.width();
 };
+function findHeader($table, headerRows) {
+    return $table.find('tr:lt(' + headerRows + ')');
+}
+exports.findHeader = findHeader;
+function cloneTableHeadersOnly($table, headerRows) {
+    var $tableCloned = $table.clone();
+    var $headerRowsCloned = findHeader($tableCloned, headerRows);
+    var $headerRowGroupsCloned = $headerRowsCloned.parent();
+    $tableCloned.find('tr').not($headerRowsCloned).remove();
+    $tableCloned.children().not($headerRowGroupsCloned).remove();
+    $tableCloned.removeAttr('id').find('[id]').removeAttr('id');
+    return $tableCloned;
+}
+exports.cloneTableHeadersOnly = cloneTableHeadersOnly;
 function syncWidth($clonedRowGroups, $originalRowGroups) {
     $clonedRowGroups.each(function (rowGroupIndex, clonedRowGroup) {
         var $clonedRowGroup = $(clonedRowGroup);

@@ -14,6 +14,23 @@ export const getActualWidth = window.getComputedStyle ? function ($element: JQue
 	return $element.width()!;
 };
 
+export function findHeader($table: JQuery, headerRows: number) {
+	return $table.find('tr:lt(' + headerRows + ')');
+}
+
+export function cloneTableHeadersOnly($table: JQuery, headerRows: number) {
+	const $tableCloned = $table.clone();
+	const $headerRowsCloned = findHeader($tableCloned, headerRows);
+	const $headerRowGroupsCloned = $headerRowsCloned.parent();
+
+	$tableCloned.find('tr').not($headerRowsCloned).remove();
+	$tableCloned.children().not($headerRowGroupsCloned).remove();
+
+	$tableCloned.removeAttr('id').find('[id]').removeAttr('id');
+
+	return $tableCloned;
+}
+
 export function syncWidth($clonedRowGroups: JQuery, $originalRowGroups: JQuery) {
 	$clonedRowGroups.each(function (rowGroupIndex, clonedRowGroup) {
 		const $clonedRowGroup = $(clonedRowGroup);

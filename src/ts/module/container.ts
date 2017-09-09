@@ -20,45 +20,44 @@ function containerTableFixedHeader(this: JQuery, customOptions?: IJQueryTableFix
 		return typeof (options.fixedTop) === 'function' ? options.fixedTop() : options.fixedTop;
 	};
 
-	const findHeader = function ($table: JQuery) {
-		return $table.find('tr:lt(' + options.headerRows + ')');
-	};
-
-	this.filter('table').each(function (index, element) {
+	this.filter('table:not(.' + options.fixedClass + ')').each(function (index, element) {
 		const $table = $(element);
 
-		const $scrollContainer = $table.closest(options.scrollContainer!).eq(0);
-		if (!$scrollContainer.length) {
-			return;
-		}
-		if ($scrollContainer.css('position') === '' || $scrollContainer.css('position') === 'static') {
-			$scrollContainer.css('position', 'relative');
-		}
-
-		const $headerRows = findHeader($table);
+		const $headerRows = utility.findHeader($table, options.headerRows);
 		if (!$headerRows.length) {
 			return;
 		}
-
 		const $headerRowGroups = $headerRows.parent();
 
-		const $tableCloned = $table.clone();
-		const $headerRowsCloned = findHeader($tableCloned);
-		const $headerRowGroupsCloned = $headerRowsCloned.parent();
+		let $tableCloned = $table.data('cloned');
+		if ($tableCloned) {
+			const $tableClonedNew = utility.cloneTableHeadersOnly($table, options.headerRows);
+			$tableCloned.empty().append($tableClonedNew.children());
+			utility.syncWidth($tableCloned.children(), $headerRowGroups);
+		}
+		else {
+			const $scrollContainer = $table.closest(options.scrollContainer!).eq(0);
+			if (!$scrollContainer.length) {
+				return;
+			}
+			if ($scrollContainer.css('position') === '' || $scrollContainer.css('position') === 'static') {
+				$scrollContainer.css('position', 'relative');
+			}
 
-		$tableCloned.find('tr').not($headerRowsCloned).remove();
-		$tableCloned.children().not($headerRowGroupsCloned).remove();
+			$tableCloned = utility.cloneTableHeadersOnly($table, options.headerRows);
+			$tableCloned.addClass(options.fixedClass);
+			$tableCloned.css(utility.defaultClonedStyle);
 
-		$tableCloned.addClass(options.fixedClass).removeAttr('id').find('[id]').removeAttr('id');
-		$tableCloned.css(utility.defaultClonedStyle);
+			$table.data('cloned', $tableCloned);
+			$table.after($tableCloned);
 
-		$table.after($tableCloned);
-
-		$table.data('positioning', false);
-		const scrollHandler = function () {
-			if (!$table.data('positioning')) {
+			$table.data('positioning', false);
+			const scrollHandler = function () {
+				if (!$table.is(':visible') || $table.data('positioning')) {
+					return;
+				}
 				$table.data('positioning', true);
-				utility.syncWidth($headerRowGroupsCloned, $headerRowGroups);
+				utility.syncWidth($tableCloned.children(), $headerRowGroups);
 
 				const fixedTop = getFixedTop();
 				const scrollTop = $scrollContainer.scrollTop()!;
@@ -92,17 +91,17 @@ function containerTableFixedHeader(this: JQuery, customOptions?: IJQueryTableFix
 					$tableCloned.css('visibility', 'hidden');
 				}
 				$table.data('positioning', false);
-			}
-		};
-		$scrollContainer.scroll(scrollHandler);
-		$win.scroll(scrollHandler);
-		$win.resize(scrollHandler);
+			};
+			$scrollContainer.scroll(scrollHandler);
+			$win.scroll(scrollHandler);
+			$win.resize(scrollHandler);
 
-		scrollHandler();
+			scrollHandler();
+		}
 	});
 
 	return this;
-};
+}
 
-export { containerTableFixedHeader }
+export {containerTableFixedHeader}
 export default containerTableFixedHeader;

@@ -86,8 +86,8 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_0__;
 "use strict";
 
 exports.__esModule = true;
-exports.isIE6 = (window.ActiveXObject && !window.XMLHttpRequest);
-exports.isIE7 = (window.ActiveXObject && window.XMLHttpRequest && !document.documentMode);
+exports.isIE6 = Boolean(window.ActiveXObject && !window.XMLHttpRequest);
+exports.isIE7 = Boolean(window.ActiveXObject && window.XMLHttpRequest && !document.documentMode);
 exports.getActualWidth = window.getComputedStyle ? function ($element) {
     var width = window.getComputedStyle($element[0]).width;
     return parseFloat(width);
@@ -98,6 +98,20 @@ exports.getActualWidth = window.getComputedStyle ? function ($element) {
 } : function ($element) {
     return $element.width();
 };
+function findHeader($table, headerRows) {
+    return $table.find('tr:lt(' + headerRows + ')');
+}
+exports.findHeader = findHeader;
+function cloneTableHeadersOnly($table, headerRows) {
+    var $tableCloned = $table.clone();
+    var $headerRowsCloned = findHeader($tableCloned, headerRows);
+    var $headerRowGroupsCloned = $headerRowsCloned.parent();
+    $tableCloned.find('tr').not($headerRowsCloned).remove();
+    $tableCloned.children().not($headerRowGroupsCloned).remove();
+    $tableCloned.removeAttr('id').find('[id]').removeAttr('id');
+    return $tableCloned;
+}
+exports.cloneTableHeadersOnly = cloneTableHeadersOnly;
 function syncWidth($clonedRowGroups, $originalRowGroups) {
     $clonedRowGroups.each(function (rowGroupIndex, clonedRowGroup) {
         var $clonedRowGroup = $(clonedRowGroup);
@@ -171,32 +185,35 @@ function regularTableFixedHeader(customOptions) {
     var getFixedTop = function () {
         return typeof (options.fixedTop) === 'function' ? options.fixedTop() : options.fixedTop;
     };
-    var findHeader = function ($table) {
-        return $table.find('tr:lt(' + options.headerRows + ')');
-    };
-    this.filter('table').each(function (index, element) {
+    this.filter('table:not(.' + options.fixedClass + ')').each(function (index, element) {
         var $table = $(element);
-        var $scrollContainer = $win;
-        var $headerRows = findHeader($table);
+        var $headerRows = utility.findHeader($table, options.headerRows);
         if (!$headerRows.length) {
             return;
         }
         var $headerRowGroups = $headerRows.parent();
-        var $tableCloned = $table.clone();
-        var $headerRowsCloned = findHeader($tableCloned);
-        var $headerRowGroupsCloned = $headerRowsCloned.parent();
-        $tableCloned.find('tr').not($headerRowsCloned).remove();
-        $tableCloned.children().not($headerRowGroupsCloned).remove();
-        $tableCloned.addClass(options.fixedClass).removeAttr('id').find('[id]').removeAttr('id');
-        $tableCloned.css(utility.defaultClonedStyle);
-        $table.after($tableCloned);
-        $table.data('positioning', false);
-        var scrollHandler = function () {
-            if (!$table.data('positioning')) {
+        var $tableCloned = $table.data('cloned');
+        if ($tableCloned) {
+            var $tableClonedNew = utility.cloneTableHeadersOnly($table, options.headerRows);
+            $tableCloned.empty().append($tableClonedNew.children());
+            utility.syncWidth($tableCloned.children(), $headerRowGroups);
+        }
+        else {
+            var $scrollContainer_1 = $win;
+            $tableCloned = utility.cloneTableHeadersOnly($table, options.headerRows);
+            $tableCloned.addClass(options.fixedClass);
+            $tableCloned.css(utility.defaultClonedStyle);
+            $table.data('cloned', $tableCloned);
+            $table.after($tableCloned);
+            $table.data('positioning', false);
+            var scrollHandler = function () {
+                if (!$table.is(':visible') || $table.data('positioning')) {
+                    return;
+                }
                 $table.data('positioning', true);
-                utility.syncWidth($headerRowGroupsCloned, $headerRowGroups);
+                utility.syncWidth($tableCloned.children(), $headerRowGroups);
                 var fixedTop = getFixedTop();
-                var scrollTop = $scrollContainer.scrollTop();
+                var scrollTop = $scrollContainer_1.scrollTop();
                 var visibleTop = scrollTop + fixedTop;
                 var headersTop = $table.offset().top;
                 if ((visibleTop >= headersTop) && (visibleTop + ($tableCloned.outerHeight()) <= headersTop + $table.outerHeight())) {
@@ -210,16 +227,15 @@ function regularTableFixedHeader(customOptions) {
                     $tableCloned.css('visibility', 'hidden');
                 }
                 $table.data('positioning', false);
-            }
-        };
-        $win.scroll(scrollHandler);
-        $win.resize(scrollHandler);
-        scrollHandler();
+            };
+            $win.scroll(scrollHandler);
+            $win.resize(scrollHandler);
+            scrollHandler();
+        }
     });
     return this;
 }
 exports.regularTableFixedHeader = regularTableFixedHeader;
-;
 exports["default"] = regularTableFixedHeader;
 
 
@@ -247,43 +263,46 @@ function containerTableFixedHeader(customOptions) {
     var getFixedTop = function () {
         return typeof (options.fixedTop) === 'function' ? options.fixedTop() : options.fixedTop;
     };
-    var findHeader = function ($table) {
-        return $table.find('tr:lt(' + options.headerRows + ')');
-    };
-    this.filter('table').each(function (index, element) {
+    this.filter('table:not(.' + options.fixedClass + ')').each(function (index, element) {
         var $table = $(element);
-        var $scrollContainer = $table.closest(options.scrollContainer).eq(0);
-        if (!$scrollContainer.length) {
-            return;
-        }
-        if ($scrollContainer.css('position') === '' || $scrollContainer.css('position') === 'static') {
-            $scrollContainer.css('position', 'relative');
-        }
-        var $headerRows = findHeader($table);
+        var $headerRows = utility.findHeader($table, options.headerRows);
         if (!$headerRows.length) {
             return;
         }
         var $headerRowGroups = $headerRows.parent();
-        var $tableCloned = $table.clone();
-        var $headerRowsCloned = findHeader($tableCloned);
-        var $headerRowGroupsCloned = $headerRowsCloned.parent();
-        $tableCloned.find('tr').not($headerRowsCloned).remove();
-        $tableCloned.children().not($headerRowGroupsCloned).remove();
-        $tableCloned.addClass(options.fixedClass).removeAttr('id').find('[id]').removeAttr('id');
-        $tableCloned.css(utility.defaultClonedStyle);
-        $table.after($tableCloned);
-        $table.data('positioning', false);
-        var scrollHandler = function () {
-            if (!$table.data('positioning')) {
+        var $tableCloned = $table.data('cloned');
+        if ($tableCloned) {
+            var $tableClonedNew = utility.cloneTableHeadersOnly($table, options.headerRows);
+            $tableCloned.empty().append($tableClonedNew.children());
+            utility.syncWidth($tableCloned.children(), $headerRowGroups);
+        }
+        else {
+            var $scrollContainer_1 = $table.closest(options.scrollContainer).eq(0);
+            if (!$scrollContainer_1.length) {
+                return;
+            }
+            if ($scrollContainer_1.css('position') === '' || $scrollContainer_1.css('position') === 'static') {
+                $scrollContainer_1.css('position', 'relative');
+            }
+            $tableCloned = utility.cloneTableHeadersOnly($table, options.headerRows);
+            $tableCloned.addClass(options.fixedClass);
+            $tableCloned.css(utility.defaultClonedStyle);
+            $table.data('cloned', $tableCloned);
+            $table.after($tableCloned);
+            $table.data('positioning', false);
+            var scrollHandler = function () {
+                if (!$table.is(':visible') || $table.data('positioning')) {
+                    return;
+                }
                 $table.data('positioning', true);
-                utility.syncWidth($headerRowGroupsCloned, $headerRowGroups);
+                utility.syncWidth($tableCloned.children(), $headerRowGroups);
                 var fixedTop = getFixedTop();
-                var scrollTop = $scrollContainer.scrollTop();
+                var scrollTop = $scrollContainer_1.scrollTop();
                 var visibleTop = scrollTop + fixedTop;
                 var headersTop = $table[0].offsetTop;
                 if ((visibleTop >= headersTop) && (visibleTop + ($tableCloned.outerHeight()) <= headersTop + $table.outerHeight())) {
                     var clipRight = void 0;
-                    var tableVisibleWidth = $scrollContainer[0].clientWidth - $table[0].offsetLeft + $scrollContainer.scrollLeft();
+                    var tableVisibleWidth = $scrollContainer_1[0].clientWidth - $table[0].offsetLeft + $scrollContainer_1.scrollLeft();
                     if (tableVisibleWidth < $table.outerWidth()) {
                         clipRight = tableVisibleWidth + 'px';
                     }
@@ -291,7 +310,7 @@ function containerTableFixedHeader(customOptions) {
                         clipRight = 'auto';
                     }
                     var clipLeft = void 0;
-                    var tableInvisibleLeft = $scrollContainer.scrollLeft() - $table[0].offsetLeft;
+                    var tableInvisibleLeft = $scrollContainer_1.scrollLeft() - $table[0].offsetLeft;
                     if (tableInvisibleLeft > 0) {
                         clipLeft = tableInvisibleLeft + 'px';
                     }
@@ -299,7 +318,7 @@ function containerTableFixedHeader(customOptions) {
                         clipLeft = 'auto';
                     }
                     $tableCloned.css({
-                        'top': $scrollContainer.offset().top - $win.scrollTop() + fixedTop + 'px',
+                        'top': $scrollContainer_1.offset().top - $win.scrollTop() + fixedTop + 'px',
                         'left': $table.offset().left - $win.scrollLeft() + 'px',
                         'clip': 'rect(auto ' + clipRight + ' auto ' + clipLeft + ')',
                         'visibility': 'visible'
@@ -309,17 +328,16 @@ function containerTableFixedHeader(customOptions) {
                     $tableCloned.css('visibility', 'hidden');
                 }
                 $table.data('positioning', false);
-            }
-        };
-        $scrollContainer.scroll(scrollHandler);
-        $win.scroll(scrollHandler);
-        $win.resize(scrollHandler);
-        scrollHandler();
+            };
+            $scrollContainer_1.scroll(scrollHandler);
+            $win.scroll(scrollHandler);
+            $win.resize(scrollHandler);
+            scrollHandler();
+        }
     });
     return this;
 }
 exports.containerTableFixedHeader = containerTableFixedHeader;
-;
 exports["default"] = containerTableFixedHeader;
 
 
