@@ -1,3 +1,5 @@
+import $ = require('jquery');
+
 export const isIE6 = Boolean(window.ActiveXObject && !window.XMLHttpRequest);
 
 export const isIE7 = Boolean(window.ActiveXObject && window.XMLHttpRequest && !document.documentMode);

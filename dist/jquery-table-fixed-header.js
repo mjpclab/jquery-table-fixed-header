@@ -86,6 +86,7 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_0__;
 "use strict";
 
 exports.__esModule = true;
+var $ = __webpack_require__(0);
 exports.isIE6 = Boolean(window.ActiveXObject && !window.XMLHttpRequest);
 exports.isIE7 = Boolean(window.ActiveXObject && window.XMLHttpRequest && !document.documentMode);
 exports.getActualWidth = window.getComputedStyle ? function ($element) {

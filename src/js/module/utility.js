@@ -1,5 +1,6 @@
 "use strict";
 exports.__esModule = true;
+var $ = require("jquery");
 exports.isIE6 = Boolean(window.ActiveXObject && !window.XMLHttpRequest);
 exports.isIE7 = Boolean(window.ActiveXObject && window.XMLHttpRequest && !document.documentMode);
 exports.getActualWidth = window.getComputedStyle ? function ($element) {
