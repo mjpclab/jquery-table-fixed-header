@@ -7,7 +7,7 @@
 {
 	width:90%;
 	border-collapse:collapse;
-	border:1px #ddd solid;
+	border:5px #ddd solid;
 	margin: 20px;
 }
 
@@ -30,10 +30,13 @@
 	background:#edffe9;
 }
 
-.gridview th,
+.gridview th {
+	padding:2px 2px;
+	border:1px #ddd solid;
+}
 .gridview td 
 {
-	padding:2px 5px;
+	padding:2px 10px;
 	border:1px #ddd solid;
 }
 

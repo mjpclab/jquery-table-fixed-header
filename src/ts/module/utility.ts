@@ -4,6 +4,8 @@ export const isIE6 = Boolean(window.ActiveXObject && !window.XMLHttpRequest);
 
 export const isIE7 = Boolean(window.ActiveXObject && window.XMLHttpRequest && !document.documentMode);
 
+export const isIE8 = Boolean(window.ActiveXObject && window.XMLHttpRequest && document.documentMode && !window.XMLSerializer);
+
 export const getActualWidth = window.getComputedStyle ? function ($element: JQuery) {
 	const width = window.getComputedStyle($element[0]).width;
 	return parseFloat(width!);
@@ -33,11 +35,17 @@ export function cloneTableHeadersOnly($table: JQuery, headerRows: number) {
 	return $tableCloned;
 }
 
+const syncTableWidth = (isIE7 || isIE8) ? function ($clonedTable: JQuery, $originalTable: JQuery) {
+	$clonedTable.width($originalTable.outerWidth()!);
+} : function ($clonedTable: JQuery, $originalTable: JQuery) {
+	$clonedTable.width(getActualWidth($originalTable));
+};
+
 export function syncWidth($clonedRowGroups: JQuery, $originalRowGroups: JQuery) {
 	$clonedRowGroups.each(function (rowGroupIndex, clonedRowGroup) {
 		const $clonedRowGroup = $(clonedRowGroup);
 		const $originalRowGroup = $originalRowGroups.eq(rowGroupIndex);
-		$clonedRowGroup.parent().width($originalRowGroup.parent().outerWidth()!);
+		syncTableWidth($clonedRowGroup.parent(), $originalRowGroup.parent());
 
 		$clonedRowGroup.children().each(function (clonedRowIndex, clonedRow) {
 			const $clonedRow = $(clonedRow);

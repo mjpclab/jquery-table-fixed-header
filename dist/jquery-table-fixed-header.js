@@ -89,6 +89,7 @@ exports.__esModule = true;
 var $ = __webpack_require__(0);
 exports.isIE6 = Boolean(window.ActiveXObject && !window.XMLHttpRequest);
 exports.isIE7 = Boolean(window.ActiveXObject && window.XMLHttpRequest && !document.documentMode);
+exports.isIE8 = Boolean(window.ActiveXObject && window.XMLHttpRequest && document.documentMode && !window.XMLSerializer);
 exports.getActualWidth = window.getComputedStyle ? function ($element) {
     var width = window.getComputedStyle($element[0]).width;
     return parseFloat(width);
@@ -113,11 +114,16 @@ function cloneTableHeadersOnly($table, headerRows) {
     return $tableCloned;
 }
 exports.cloneTableHeadersOnly = cloneTableHeadersOnly;
+var syncTableWidth = (exports.isIE7 || exports.isIE8) ? function ($clonedTable, $originalTable) {
+    $clonedTable.width($originalTable.outerWidth());
+} : function ($clonedTable, $originalTable) {
+    $clonedTable.width(exports.getActualWidth($originalTable));
+};
 function syncWidth($clonedRowGroups, $originalRowGroups) {
     $clonedRowGroups.each(function (rowGroupIndex, clonedRowGroup) {
         var $clonedRowGroup = $(clonedRowGroup);
         var $originalRowGroup = $originalRowGroups.eq(rowGroupIndex);
-        $clonedRowGroup.parent().width($originalRowGroup.parent().outerWidth());
+        syncTableWidth($clonedRowGroup.parent(), $originalRowGroup.parent());
         $clonedRowGroup.children().each(function (clonedRowIndex, clonedRow) {
             var $clonedRow = $(clonedRow);
             var $originalRow = $originalRowGroup.children().eq(clonedRowIndex);

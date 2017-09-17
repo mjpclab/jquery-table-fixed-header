@@ -1,6 +1,7 @@
 interface Window {
 	ActiveXObject: any;
 	XMLHttpRequest: any;
+	XMLSerializer: any;
 }
 
 interface Document {
