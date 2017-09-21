@@ -55,26 +55,32 @@ function containerTableFixedHeader(customOptions) {
                 var visibleTop = scrollTop + fixedTop;
                 var headersTop = $table[0].offsetTop;
                 if ((visibleTop >= headersTop) && (visibleTop + ($tableCloned.outerHeight()) <= headersTop + $table.outerHeight())) {
-                    var clipRight = void 0;
+                    var tableWidth = $table.outerWidth();
+                    var clipRight = void 0, clipPathRight = void 0;
                     var tableVisibleWidth = $scrollContainer_1[0].clientWidth - $table[0].offsetLeft + $scrollContainer_1.scrollLeft();
-                    if (tableVisibleWidth < $table.outerWidth()) {
+                    if (tableVisibleWidth < tableWidth) {
                         clipRight = tableVisibleWidth + 'px';
+                        clipPathRight = tableWidth - tableVisibleWidth + 'px';
                     }
                     else {
                         clipRight = 'auto';
+                        clipPathRight = '0';
                     }
-                    var clipLeft = void 0;
+                    var clipLeft = void 0, clipPathLeft = void 0;
                     var tableInvisibleLeft = $scrollContainer_1.scrollLeft() - $table[0].offsetLeft;
                     if (tableInvisibleLeft > 0) {
                         clipLeft = tableInvisibleLeft + 'px';
+                        clipPathLeft = tableInvisibleLeft + 'px';
                     }
                     else {
                         clipLeft = 'auto';
+                        clipPathLeft = '0';
                     }
                     $tableCloned.css({
-                        'top': $scrollContainer_1.offset().top - $win.scrollTop() + fixedTop + 'px',
+                        'top': Math.round($scrollContainer_1.offset().top - $win.scrollTop() + fixedTop) + 'px',
                         'left': $table.offset().left - $win.scrollLeft() + 'px',
                         'clip': 'rect(auto ' + clipRight + ' auto ' + clipLeft + ')',
+                        'clip-path': 'inset(0 ' + clipPathRight + ' 0 ' + clipPathLeft + ')',
                         'visibility': 'visible'
                     });
                 }

@@ -64,27 +64,35 @@ function containerTableFixedHeader(this: JQuery, customOptions?: IJQueryTableFix
 				const visibleTop = scrollTop + fixedTop;
 				const headersTop = $table[0].offsetTop;
 				if ((visibleTop >= headersTop) && (visibleTop + ($tableCloned.outerHeight()!) <= headersTop + $table.outerHeight()!)) {
-					let clipRight;
+					const tableWidth = $table.outerWidth()!;
+
+					let clipRight, clipPathRight;
 					const tableVisibleWidth = $scrollContainer[0].clientWidth - $table[0].offsetLeft + $scrollContainer.scrollLeft()!;
-					if (tableVisibleWidth < $table.outerWidth()!) {
+					if (tableVisibleWidth < tableWidth) {
 						clipRight = tableVisibleWidth + 'px';
+						clipPathRight = tableWidth - tableVisibleWidth + 'px';
 					}
 					else {
 						clipRight = 'auto';
+						clipPathRight = '0';
 					}
-					let clipLeft;
+
+					let clipLeft, clipPathLeft;
 					const tableInvisibleLeft = $scrollContainer.scrollLeft()! - $table[0].offsetLeft;
 					if (tableInvisibleLeft > 0) {
 						clipLeft = tableInvisibleLeft + 'px';
+						clipPathLeft = tableInvisibleLeft + 'px';
 					}
 					else {
 						clipLeft = 'auto';
+						clipPathLeft = '0';
 					}
 
 					$tableCloned.css({
-						'top': $scrollContainer.offset()!.top - $win.scrollTop()! + fixedTop + 'px',
+						'top': Math.round($scrollContainer.offset()!.top - $win.scrollTop()! + fixedTop) + 'px',
 						'left': $table.offset()!.left - $win.scrollLeft()! + 'px',
 						'clip': 'rect(auto ' + clipRight + ' auto ' + clipLeft + ')',
+						'clip-path': 'inset(0 ' + clipPathRight + ' 0 ' + clipPathLeft + ')',
 						'visibility': 'visible'
 					});
 				} else {
