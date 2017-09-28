@@ -8,7 +8,7 @@ function regularTableFixedHeader(this: JQuery, customOptions?: JQueryTableFixedH
 		fixedTop: 0
 	};
 
-	const options = $.extend({}, defaultOptions, this.data(), customOptions) as JQueryTableFixedHeaderOptions;
+	const options = $.extend({}, defaultOptions, this.data(), customOptions) as _JQueryTableFixedHeaderOptions;
 	if (typeof (options.fixedTop) !== 'function') {
 		options.fixedTop = parseInt(options.fixedTop);
 	}
