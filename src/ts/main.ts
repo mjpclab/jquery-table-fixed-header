@@ -4,7 +4,7 @@ import * as utility from './module/utility';
 import regularTableFixedHeader from './module/regular';
 import containerTableFixedHeader from './module/container';
 
-$.fn.tableFixedHeader = function (customOptions?: IJQueryTableFixedHeaderOptions) {
+$.fn.tableFixedHeader = function (customOptions?: JQueryTableFixedHeaderOptions) {
 	if (utility.isIE6) {
 		return this;
 	}
@@ -15,5 +15,7 @@ $.fn.tableFixedHeader = function (customOptions?: IJQueryTableFixedHeaderOptions
 		return regularTableFixedHeader.call(this, customOptions);
 	}
 };
+
+$('table.fixed-header').tableFixedHeader();
 
 export = $;

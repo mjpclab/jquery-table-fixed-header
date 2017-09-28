@@ -14,4 +14,5 @@ $.fn.tableFixedHeader = function (customOptions) {
         return regular_1["default"].call(this, customOptions);
     }
 };
+$('table.fixed-header').tableFixedHeader();
 module.exports = $;

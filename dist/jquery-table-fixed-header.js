@@ -166,6 +166,7 @@ $.fn.tableFixedHeader = function (customOptions) {
         return regular_1["default"].call(this, customOptions);
     }
 };
+$('table.fixed-header').tableFixedHeader();
 module.exports = $;
 
 
@@ -184,7 +185,7 @@ function regularTableFixedHeader(customOptions) {
         fixedClass: 'table-fixed-header',
         fixedTop: 0
     };
-    var options = $.extend({}, defaultOptions, customOptions);
+    var options = $.extend({}, defaultOptions, this.data(), customOptions);
     if (typeof (options.fixedTop) !== 'function') {
         options.fixedTop = parseInt(options.fixedTop);
     }
@@ -262,7 +263,7 @@ function containerTableFixedHeader(customOptions) {
         fixedTop: 0,
         scrollContainer: ''
     };
-    var options = $.extend({}, defaultOptions, customOptions);
+    var options = $.extend({}, defaultOptions, this.data(), customOptions);
     if (typeof (options.fixedTop) !== 'function') {
         options.fixedTop = parseInt(options.fixedTop);
     }

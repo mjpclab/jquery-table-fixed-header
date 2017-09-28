@@ -8,7 +8,7 @@ function regularTableFixedHeader(customOptions) {
         fixedClass: 'table-fixed-header',
         fixedTop: 0
     };
-    var options = $.extend({}, defaultOptions, customOptions);
+    var options = $.extend({}, defaultOptions, this.data(), customOptions);
     if (typeof (options.fixedTop) !== 'function') {
         options.fixedTop = parseInt(options.fixedTop);
     }

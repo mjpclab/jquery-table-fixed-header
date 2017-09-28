@@ -15,6 +15,16 @@ $("table").tableFixedHeader({
 });
 ```
 
+```html
+<!--
+Table with `fixed-header` class will enable fixed header automatically.
+Options can be specified by `data-` attribute`.
+-->
+<table class="fixed-header" data-header-rows="2">
+	......
+</table>
+```
+
 ## Html Structure
 The fixed header element will keep the same table group container as original table(such as `thead` or `tbody`).
 

@@ -4,7 +4,7 @@ declare module 'jquery-table-fixed-header' {
 	export = jQuery;
 }
 
-interface IJQueryTableFixedHeaderOptions {
+interface JQueryTableFixedHeaderOptions {
 	headerRows: number;
 	fixedClass: string;
 	fixedTop: number | (() => number);
@@ -12,5 +12,5 @@ interface IJQueryTableFixedHeaderOptions {
 }
 
 interface JQuery {
-	tableFixedHeader(options?: IJQueryTableFixedHeaderOptions): JQuery;
+	tableFixedHeader(options?: JQueryTableFixedHeaderOptions): JQuery;
 }
