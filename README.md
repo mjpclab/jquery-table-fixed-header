@@ -4,11 +4,11 @@
 Modern browsers that follows standards and IE7+
 
 ## Usage
-``` javascript
+```javascript
 $("table").tableFixedHeader();
 ```
 
-``` javascript
+```javascript
 $("table").tableFixedHeader({
 	headerRows: 2		//if your header have more than 1 row
 	/*, other options */
@@ -35,7 +35,7 @@ The fixed header is just cloned from the original table. It follows after the or
 The number of leading rows from table that will be fixed.
 
 `fixedClass`  
-CSS class for fixed header.
+CSS class for cloned fixed table.
 
 `fixedTop`  
 Top offset of the fixed header. Can be a number (of pixels) or a function that returns the value. Useful if you already have a fixed page header.
