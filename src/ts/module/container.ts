@@ -1,15 +1,15 @@
-import * as $ from 'jquery';
+import $ from 'jquery';
 import * as utility from './utility';
 
-function containerTableFixedHeader(this: JQuery, customOptions?: JQueryTableFixedHeaderOptions) {
-	const defaultOptions: JQueryTableFixedHeaderOptions = {
+function containerTableFixedHeader(this: JQuery, customOptions?: JQueryTableFixedHeader.Options) {
+	const defaultOptions: JQueryTableFixedHeader.NecessaryOptions = {
 		headerRows: 1,
 		fixedClass: 'container-table-fixed-header',
 		fixedTop: 0,
 		scrollContainer: ''
 	};
 
-	const options = $.extend({}, defaultOptions, this.data(), customOptions) as _JQueryTableFixedHeaderOptions;
+	const options = $.extend({}, defaultOptions, this.data(), customOptions);
 	if (typeof (options.fixedTop) !== 'function') {
 		options.fixedTop = parseInt(options.fixedTop);
 	}

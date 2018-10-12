@@ -1,42 +1,40 @@
-"use strict";
-exports.__esModule = true;
-var $ = require("jquery");
-var utility = require("./utility");
+import $ from 'jquery';
+import * as utility from './utility';
 function containerTableFixedHeader(customOptions) {
-    var defaultOptions = {
+    const defaultOptions = {
         headerRows: 1,
         fixedClass: 'container-table-fixed-header',
         fixedTop: 0,
         scrollContainer: ''
     };
-    var options = $.extend({}, defaultOptions, this.data(), customOptions);
+    const options = $.extend({}, defaultOptions, this.data(), customOptions);
     if (typeof (options.fixedTop) !== 'function') {
         options.fixedTop = parseInt(options.fixedTop);
     }
-    var $win = $(window);
-    var getFixedTop = function () {
+    const $win = $(window);
+    const getFixedTop = function () {
         return typeof (options.fixedTop) === 'function' ? options.fixedTop() : options.fixedTop;
     };
     this.filter('table:not(.' + options.fixedClass + ')').each(function (index, element) {
-        var $table = $(element);
-        var $headerRows = utility.findHeader($table, options.headerRows);
+        const $table = $(element);
+        const $headerRows = utility.findHeader($table, options.headerRows);
         if (!$headerRows.length) {
             return;
         }
-        var $headerRowGroups = $headerRows.parent();
-        var $tableCloned = $table.data('cloned');
+        const $headerRowGroups = $headerRows.parent();
+        let $tableCloned = $table.data('cloned');
         if ($tableCloned) {
-            var $tableClonedNew = utility.cloneTableHeadersOnly($table, options.headerRows);
+            const $tableClonedNew = utility.cloneTableHeadersOnly($table, options.headerRows);
             $tableCloned.empty().append($tableClonedNew.children());
             utility.syncWidth($tableCloned.children(), $headerRowGroups);
         }
         else {
-            var $scrollContainer_1 = $table.closest(options.scrollContainer).eq(0);
-            if (!$scrollContainer_1.length) {
+            const $scrollContainer = $table.closest(options.scrollContainer).eq(0);
+            if (!$scrollContainer.length) {
                 return;
             }
-            if ($scrollContainer_1.css('position') === '' || $scrollContainer_1.css('position') === 'static') {
-                $scrollContainer_1.css('position', 'relative');
+            if ($scrollContainer.css('position') === '' || $scrollContainer.css('position') === 'static') {
+                $scrollContainer.css('position', 'relative');
             }
             $tableCloned = utility.cloneTableHeadersOnly($table, options.headerRows);
             $tableCloned.addClass(options.fixedClass);
@@ -44,20 +42,20 @@ function containerTableFixedHeader(customOptions) {
             $table.data('cloned', $tableCloned);
             $table.after($tableCloned);
             $table.data('positioning', false);
-            var scrollHandler = function () {
+            const scrollHandler = function () {
                 if (!$table.is(':visible') || $table.data('positioning')) {
                     return;
                 }
                 $table.data('positioning', true);
                 utility.syncWidth($tableCloned.children(), $headerRowGroups);
-                var fixedTop = getFixedTop();
-                var scrollTop = $scrollContainer_1.scrollTop();
-                var visibleTop = scrollTop + fixedTop;
-                var headersTop = $table[0].offsetTop;
+                const fixedTop = getFixedTop();
+                const scrollTop = $scrollContainer.scrollTop();
+                const visibleTop = scrollTop + fixedTop;
+                const headersTop = $table[0].offsetTop;
                 if ((visibleTop >= headersTop) && (visibleTop + ($tableCloned.outerHeight()) <= headersTop + $table.outerHeight())) {
-                    var tableWidth = $table.outerWidth();
-                    var clipRight = void 0, clipPathRight = void 0;
-                    var tableVisibleWidth = $scrollContainer_1[0].clientWidth - $table[0].offsetLeft + $scrollContainer_1.scrollLeft();
+                    const tableWidth = $table.outerWidth();
+                    let clipRight, clipPathRight;
+                    const tableVisibleWidth = $scrollContainer[0].clientWidth - $table[0].offsetLeft + $scrollContainer.scrollLeft();
                     if (tableVisibleWidth < tableWidth) {
                         clipRight = tableVisibleWidth + 'px';
                         clipPathRight = tableWidth - tableVisibleWidth + 'px';
@@ -66,8 +64,8 @@ function containerTableFixedHeader(customOptions) {
                         clipRight = 'auto';
                         clipPathRight = '0';
                     }
-                    var clipLeft = void 0, clipPathLeft = void 0;
-                    var tableInvisibleLeft = $scrollContainer_1.scrollLeft() - $table[0].offsetLeft;
+                    let clipLeft, clipPathLeft;
+                    const tableInvisibleLeft = $scrollContainer.scrollLeft() - $table[0].offsetLeft;
                     if (tableInvisibleLeft > 0) {
                         clipLeft = tableInvisibleLeft + 'px';
                         clipPathLeft = tableInvisibleLeft + 'px';
@@ -77,7 +75,7 @@ function containerTableFixedHeader(customOptions) {
                         clipPathLeft = '0';
                     }
                     $tableCloned.css({
-                        'top': Math.round($scrollContainer_1.offset().top - $win.scrollTop() + fixedTop) + 'px',
+                        'top': Math.round($scrollContainer.offset().top - $win.scrollTop() + fixedTop) + 'px',
                         'left': $table.offset().left - $win.scrollLeft() + 'px',
                         'clip': 'rect(auto ' + clipRight + ' auto ' + clipLeft + ')',
                         'clip-path': 'inset(0 ' + clipPathRight + ' 0 ' + clipPathLeft + ')',
@@ -89,7 +87,7 @@ function containerTableFixedHeader(customOptions) {
                 }
                 $table.data('positioning', false);
             };
-            $scrollContainer_1.scroll(scrollHandler);
+            $scrollContainer.scroll(scrollHandler);
             $win.scroll(scrollHandler);
             $win.resize(scrollHandler);
             scrollHandler();
@@ -97,5 +95,5 @@ function containerTableFixedHeader(customOptions) {
     });
     return this;
 }
-exports.containerTableFixedHeader = containerTableFixedHeader;
-exports["default"] = containerTableFixedHeader;
+export { containerTableFixedHeader };
+export default containerTableFixedHeader;
