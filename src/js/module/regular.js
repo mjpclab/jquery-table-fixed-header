@@ -1,37 +1,35 @@
 import $ from 'jquery';
-import * as utility from './utility';
+import defaultOptions from '../default/regular-options';
+import normalizeOptions from '../utility/normalize-options';
+import getUnprocessedTables from '../utility/get-unprocessed-tables';
+import getFixedTop from '../utility/get-fixed-top';
+import findHeader from '../utility/find-header';
+import cloneTableHeadersOnly from '../utility/clone-table-headers-only';
+import syncWidth from '../utility/sync-width';
+import defaultClonedStyle from '../default/cloned-style';
 function regularTableFixedHeader(customOptions) {
-    const defaultOptions = {
-        headerRows: 1,
-        fixedClass: 'table-fixed-header',
-        fixedTop: 0
-    };
     const options = $.extend({}, defaultOptions, this.data(), customOptions);
-    if (typeof (options.fixedTop) !== 'function') {
-        options.fixedTop = parseInt(options.fixedTop);
-    }
+    normalizeOptions(options);
+    const { fixedTop: fixedTopOption, fixedClass: fixedClassOption } = options;
     const $win = $(window);
-    const getFixedTop = function () {
-        return typeof (options.fixedTop) === 'function' ? options.fixedTop() : options.fixedTop;
-    };
-    this.filter('table:not(.' + options.fixedClass + ')').each(function (index, element) {
+    getUnprocessedTables(this, fixedClassOption).each(function (index, element) {
         const $table = $(element);
-        const $headerRows = utility.findHeader($table, options.headerRows);
+        const $headerRows = findHeader($table, options.headerRows);
         if (!$headerRows.length) {
             return;
         }
         const $headerRowGroups = $headerRows.parent();
         let $tableCloned = $table.data('cloned');
         if ($tableCloned) {
-            const $tableClonedNew = utility.cloneTableHeadersOnly($table, options.headerRows);
+            const $tableClonedNew = cloneTableHeadersOnly($table, options.headerRows);
             $tableCloned.empty().append($tableClonedNew.children());
-            utility.syncWidth($tableCloned.children(), $headerRowGroups);
+            syncWidth($tableCloned.children(), $headerRowGroups);
         }
         else {
             const $scrollContainer = $win;
-            $tableCloned = utility.cloneTableHeadersOnly($table, options.headerRows);
+            $tableCloned = cloneTableHeadersOnly($table, options.headerRows);
             $tableCloned.addClass(options.fixedClass);
-            $tableCloned.css(utility.defaultClonedStyle);
+            $tableCloned.css(defaultClonedStyle);
             $table.data('cloned', $tableCloned);
             $table.after($tableCloned);
             $table.data('positioning', false);
@@ -40,8 +38,8 @@ function regularTableFixedHeader(customOptions) {
                     return;
                 }
                 $table.data('positioning', true);
-                utility.syncWidth($tableCloned.children(), $headerRowGroups);
-                const fixedTop = getFixedTop();
+                syncWidth($tableCloned.children(), $headerRowGroups);
+                const fixedTop = getFixedTop(fixedTopOption);
                 const scrollTop = $scrollContainer.scrollTop();
                 const visibleTop = scrollTop + fixedTop;
                 const headersTop = $table.offset().top;
@@ -64,5 +62,4 @@ function regularTableFixedHeader(customOptions) {
     });
     return this;
 }
-export { regularTableFixedHeader };
 export default regularTableFixedHeader;

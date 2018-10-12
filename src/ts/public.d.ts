@@ -1,14 +1,20 @@
 /// <reference types="jquery" />
 
 declare namespace JQueryTableFixedHeader {
-	interface NecessaryOptions {
+	interface RegularOptions {
 		headerRows: number;
 		fixedClass: string;
 		fixedTop: number | (() => number);
-		scrollContainer?: JQuery.Selector | Element | JQuery;
 	}
 
-	type Options = Partial<NecessaryOptions>;
+	interface ContainerOptions extends RegularOptions {
+		scrollContainer: JQuery.Selector | Element | JQuery;
+	}
+
+	interface AllOptions extends ContainerOptions {
+	}
+
+	type Options = Partial<AllOptions>;
 }
 
 interface JQuery {

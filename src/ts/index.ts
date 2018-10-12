@@ -2,12 +2,13 @@
 
 import $ from 'jquery';
 
-import * as utility from './module/utility';
+import {isIE6} from './utility/browser-check';
 import regularTableFixedHeader from './module/regular';
 import containerTableFixedHeader from './module/container';
+import autoEnableTableFixedHeader from './utility/auto-enable-table-fixed-header';
 
 $.fn.tableFixedHeader = function (customOptions?: JQueryTableFixedHeader.Options) {
-	if (utility.isIE6) {
+	if (isIE6) {
 		return this;
 	}
 	else if (customOptions && customOptions.scrollContainer) {
@@ -18,6 +19,6 @@ $.fn.tableFixedHeader = function (customOptions?: JQueryTableFixedHeader.Options
 	}
 };
 
-$('table.fixed-header').tableFixedHeader();
+autoEnableTableFixedHeader();
 
 export default $;
