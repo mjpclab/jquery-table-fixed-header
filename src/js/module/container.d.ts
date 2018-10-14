@@ -1,2 +1,2 @@
-declare function containerTableFixedHeader(this: JQuery, customOptions?: JQueryTableFixedHeader.Options): JQuery<HTMLElement>;
-export default containerTableFixedHeader;
+declare function tableFixedHeader(this: JQuery, customOptions?: JQueryTableFixedHeader.Options): JQuery<HTMLElement>;
+export default tableFixedHeader;
