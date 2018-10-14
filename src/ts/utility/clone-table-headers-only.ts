@@ -1,6 +1,9 @@
 import findHeader from "./find-header";
+import defaultClonedStyles from "../default/cloned-styles";
 
-function cloneTableHeadersOnly($table: JQuery, headerRows: number) {
+function cloneTableHeadersOnly($table: JQuery, options: JQueryTableFixedHeader.RegularOptions) {
+	const {headerRows, fixedClass} = options;
+
 	const $tableCloned = $table.clone();
 	const $headerRowsCloned = findHeader($tableCloned, headerRows);
 	const $headerRowGroupsCloned = $headerRowsCloned.parent();
@@ -9,6 +12,8 @@ function cloneTableHeadersOnly($table: JQuery, headerRows: number) {
 	$tableCloned.children().not($headerRowGroupsCloned).remove();
 
 	$tableCloned.removeAttr('id').find('[id]').removeAttr('id');
+	$tableCloned.addClass(fixedClass);
+	$tableCloned.css(defaultClonedStyles);
 
 	return $tableCloned;
 }
