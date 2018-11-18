@@ -13,17 +13,17 @@ const _getActualWidth = window.getComputedStyle ? function ($element: JQuery) {
 	return $element.width()!;
 };
 
-const _doSyncWidth = (isIE7 || isIE8) ? function ($clonedTable: JQuery, $originalTable: JQuery) {
+const _syncTableWidth = (isIE7 || isIE8) ? function ($clonedTable: JQuery, $originalTable: JQuery) {
 	$clonedTable.width($originalTable.outerWidth()!);
 } : function ($clonedTable: JQuery, $originalTable: JQuery) {
-	$clonedTable.width(_getActualWidth($originalTable));
+	$clonedTable.width($originalTable.width()!);
 };
 
 function syncWidth($clonedRowGroups: JQuery, $originalRowGroups: JQuery) {
 	$clonedRowGroups.each(function (rowGroupIndex, clonedRowGroup) {
 		const $clonedRowGroup = $(clonedRowGroup);
 		const $originalRowGroup = $originalRowGroups.eq(rowGroupIndex);
-		_doSyncWidth($clonedRowGroup.parent(), $originalRowGroup.parent());
+		_syncTableWidth($clonedRowGroup.parent(), $originalRowGroup.parent());
 
 		$clonedRowGroup.children().each(function (clonedRowIndex, clonedRow) {
 			const $clonedRow = $(clonedRow);

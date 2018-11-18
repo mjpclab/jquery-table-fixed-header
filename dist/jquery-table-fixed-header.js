@@ -76,10 +76,10 @@
       return $element.width();
     };
 
-    var _doSyncWidth = isIE7 || isIE8 ? function ($clonedTable, $originalTable) {
+    var _syncTableWidth = isIE7 || isIE8 ? function ($clonedTable, $originalTable) {
       $clonedTable.width($originalTable.outerWidth());
     } : function ($clonedTable, $originalTable) {
-      $clonedTable.width(_getActualWidth($originalTable));
+      $clonedTable.width($originalTable.width());
     };
 
     function syncWidth($clonedRowGroups, $originalRowGroups) {
@@ -87,7 +87,7 @@
         var $clonedRowGroup = $(clonedRowGroup);
         var $originalRowGroup = $originalRowGroups.eq(rowGroupIndex);
 
-        _doSyncWidth($clonedRowGroup.parent(), $originalRowGroup.parent());
+        _syncTableWidth($clonedRowGroup.parent(), $originalRowGroup.parent());
 
         $clonedRowGroup.children().each(function (clonedRowIndex, clonedRow) {
           var $clonedRow = $(clonedRow);
@@ -259,7 +259,7 @@
       $('table.fixed-header').tableFixedHeader();
     }
 
-    /// <reference path='public.d.ts' />
+    /// <reference path='./type/public.d.ts' />
 
     $.fn.tableFixedHeader = function (customOptions) {
       if (isIE6) {

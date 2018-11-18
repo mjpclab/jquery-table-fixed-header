@@ -1,4 +1,4 @@
-/// <reference path='public.d.ts' />
+/// <reference path='./type/public.d.ts' />
 import $ from 'jquery';
 import { isIE6 } from './utility/browser-check';
 import regularTableFixedHeader from './module/regular';

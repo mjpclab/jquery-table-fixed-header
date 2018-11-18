@@ -1,4 +1,4 @@
-/// <reference path='public.d.ts' />
+/// <reference path='./type/public.d.ts' />
 
 import $ from 'jquery';
 
