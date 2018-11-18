@@ -1,4 +1,4 @@
-const options = {
+var options = {
     headerRows: 1,
     fixedClass: 'table-fixed-header container-table-fixed-header',
     fixedTop: 0,

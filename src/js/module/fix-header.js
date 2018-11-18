@@ -3,43 +3,43 @@ import getFixedTop from '../utility/get-fixed-top';
 import findHeader from '../utility/find-header';
 import cloneTableHeadersOnly from '../utility/clone-table-headers-only';
 import syncWidth from '../utility/sync-width';
-const $empty = $([]);
+var $empty = $([]);
 function FixHeader(table, options, getScrollContainer, getUpdatedStyles, bindScrollEventHandler) {
-    const $table = $(table);
-    const context = {
-        $table,
-        options,
-        $scrollContainer: $empty,
+    var $table = $(table);
+    var context = {
+        $table: $table,
+        options: options,
+        $scrollContainer: $empty
     };
-    const { headerRows, fixedTop: fixedTopOption } = options;
+    var headerRows = options.headerRows, fixedTopOption = options.fixedTop;
     //header rows
-    const $headerRows = findHeader($table, headerRows);
+    var $headerRows = findHeader($table, headerRows);
     if (!$headerRows.length) {
         return;
     }
-    const $headerRowGroups = $headerRows.parent();
+    var $headerRowGroups = $headerRows.parent();
     //scroll container
-    const $scrollContainer = context.$scrollContainer = getScrollContainer(context);
+    var $scrollContainer = context.$scrollContainer = getScrollContainer(context);
     if (!$scrollContainer.length) {
         return;
     }
     //cloned
-    const $tableCloned = cloneTableHeadersOnly($table, options);
+    var $tableCloned = cloneTableHeadersOnly($table, options);
     $table.after($tableCloned);
     //scroll handler
-    let positioning = false;
-    const scrollHandler = () => {
+    var positioning = false;
+    var scrollHandler = function () {
         if (positioning || $table.is(':hidden')) {
             return;
         }
         positioning = true;
         syncWidth($tableCloned.children(), $headerRowGroups);
-        const fixedTop = getFixedTop(fixedTopOption);
-        const scrollTop = $scrollContainer.scrollTop();
-        const visibleTop = scrollTop + fixedTop;
-        const headersTop = $table[0].offsetTop;
+        var fixedTop = getFixedTop(fixedTopOption);
+        var scrollTop = $scrollContainer.scrollTop();
+        var visibleTop = scrollTop + fixedTop;
+        var headersTop = $table[0].offsetTop;
         if ((visibleTop >= headersTop) && (visibleTop + ($tableCloned.outerHeight()) <= headersTop + $table.outerHeight())) {
-            const styles = getUpdatedStyles(fixedTop, context);
+            var styles = getUpdatedStyles(fixedTop, context);
             styles.visibility = 'visible';
             $tableCloned.css(styles);
         }

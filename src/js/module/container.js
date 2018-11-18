@@ -3,26 +3,26 @@ import defaultOptions from '../default/container-options';
 import normalizeOptions from '../utility/normalize-options';
 import getUnprocessedTables from '../utility/get-unprocessed-tables';
 import FixHeader from './fix-header';
-const $win = $(window);
+var $win = $(window);
 function tableFixedHeader(customOptions) {
-    const options = $.extend({}, defaultOptions, this.data(), customOptions);
+    var options = $.extend({}, defaultOptions, this.data(), customOptions);
     normalizeOptions(options);
     getUnprocessedTables(this, options.fixedClass).each(function (index, table) {
         FixHeader(table, options, function getScrollContainer(context) {
-            const { $table, options } = context;
-            const $scrollContainer = $table.closest(options.scrollContainer).eq(0);
+            var $table = context.$table, options = context.options;
+            var $scrollContainer = $table.closest(options.scrollContainer).eq(0);
             if ($scrollContainer.length) {
-                const scrollContainerPosition = $scrollContainer.css('position');
+                var scrollContainerPosition = $scrollContainer.css('position');
                 if (scrollContainerPosition === '' || scrollContainerPosition === 'static') {
                     $scrollContainer.css('position', 'relative');
                 }
             }
             return $scrollContainer;
         }, function getUpdatedStyles(fixedTop, context) {
-            const { $table, $scrollContainer } = context;
-            const tableWidth = $table.outerWidth();
-            let clipRight, clipPathRight;
-            const tableVisibleWidth = $scrollContainer[0].clientWidth - $table[0].offsetLeft + $scrollContainer.scrollLeft();
+            var $table = context.$table, $scrollContainer = context.$scrollContainer;
+            var tableWidth = $table.outerWidth();
+            var clipRight, clipPathRight;
+            var tableVisibleWidth = $scrollContainer[0].clientWidth - $table[0].offsetLeft + $scrollContainer.scrollLeft();
             if (tableVisibleWidth < tableWidth) {
                 clipRight = tableVisibleWidth + 'px';
                 clipPathRight = tableWidth - tableVisibleWidth + 'px';
@@ -31,8 +31,8 @@ function tableFixedHeader(customOptions) {
                 clipRight = 'auto';
                 clipPathRight = '0';
             }
-            let clipLeft, clipPathLeft;
-            const tableInvisibleLeft = $scrollContainer.scrollLeft() - $table[0].offsetLeft;
+            var clipLeft, clipPathLeft;
+            var tableInvisibleLeft = $scrollContainer.scrollLeft() - $table[0].offsetLeft;
             if (tableInvisibleLeft > 0) {
                 clipLeft = tableInvisibleLeft + 'px';
                 clipPathLeft = tableInvisibleLeft + 'px';
@@ -48,7 +48,7 @@ function tableFixedHeader(customOptions) {
                 'clip-path': 'inset(0 ' + clipPathRight + ' 0 ' + clipPathLeft + ')'
             };
         }, function bindScrollEventHandler(handler, context) {
-            const { $scrollContainer } = context;
+            var $scrollContainer = context.$scrollContainer;
             $win.on('scroll', handler);
             $win.on('resize', handler);
             $scrollContainer.on('scroll', handler);
