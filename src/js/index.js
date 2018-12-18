@@ -1,8 +1,8 @@
 /// <reference path='./type/public.d.ts' />
 import $ from 'jquery';
 import { isIE6 } from './utility/browser-check';
-import regularTableFixedHeader from './module/regular';
-import containerTableFixedHeader from './module/container';
+import regularTableFixedHeader from './feature/fix-header-regular';
+import containerTableFixedHeader from './feature/fix-header-container';
 import autoEnableTableFixedHeader from './utility/auto-enable-table-fixed-header';
 $.fn.tableFixedHeader = function (customOptions) {
     if (isIE6) {
