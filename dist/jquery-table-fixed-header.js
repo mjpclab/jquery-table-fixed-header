@@ -1,7 +1,7 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('jquery')) :
     typeof define === 'function' && define.amd ? define(['jquery'], factory) :
-    (global = global || self, global['jquery-table-fixed-header'] = factory(global.jQuery));
+    (global['jquery-table-fixed-header'] = factory(global.jQuery));
 }(this, (function ($) { 'use strict';
 
     $ = $ && $.hasOwnProperty('default') ? $['default'] : $;
@@ -79,10 +79,8 @@
     } : function ($element) {
         return $element.width();
     };
-    var _syncTableWidth = (isIE7 || isIE8) ? function ($clonedTable, $originalTable) {
+    var _syncTableWidth = function ($clonedTable, $originalTable) {
         $clonedTable.width($originalTable.outerWidth());
-    } : function ($clonedTable, $originalTable) {
-        $clonedTable.width($originalTable.width());
     };
     function syncWidth($clonedRowGroups, $originalRowGroups) {
         $clonedRowGroups.each(function (rowGroupIndex, clonedRowGroup) {
@@ -153,10 +151,10 @@
 
     var $win = $(window);
     function tableFixedHeader(customOptions) {
-        var options$1 = $.extend({}, options, this.data(), customOptions);
-        normalizeOptions(options$1);
-        getUnprocessedTables(this, options$1.fixedClass).each(function (index, table) {
-            FixHeader(table, options$1, function getScrollContainer() {
+        var options$$1 = $.extend({}, options, this.data(), customOptions);
+        normalizeOptions(options$$1);
+        getUnprocessedTables(this, options$$1.fixedClass).each(function (index, table) {
+            FixHeader(table, options$$1, function getScrollContainer() {
                 return $win;
             }, function getUpdatedStyles(fixedTop, context) {
                 var $table = context.$table, $scrollContainer = context.$scrollContainer;

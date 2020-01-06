@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import {isIE7, isIE8} from './browser-check';
+import {isIE7} from './browser-check';
 
 const _getActualWidth = window.getComputedStyle ? function ($element: JQuery) {
 	const width = window.getComputedStyle($element[0]).width;
@@ -13,10 +13,8 @@ const _getActualWidth = window.getComputedStyle ? function ($element: JQuery) {
 	return $element.width()!;
 };
 
-const _syncTableWidth = (isIE7 || isIE8) ? function ($clonedTable: JQuery, $originalTable: JQuery) {
+const _syncTableWidth = function ($clonedTable: JQuery, $originalTable: JQuery) {
 	$clonedTable.width($originalTable.outerWidth()!);
-} : function ($clonedTable: JQuery, $originalTable: JQuery) {
-	$clonedTable.width($originalTable.width()!);
 };
 
 function syncWidth($clonedRowGroups: JQuery, $originalRowGroups: JQuery) {
