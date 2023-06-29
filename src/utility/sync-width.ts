@@ -1,21 +1,15 @@
 import $ from 'jquery';
-import {isIE7} from './browser-check';
 
-const _getActualWidth = window.getComputedStyle ? function ($element: JQuery) {
-	const width = window.getComputedStyle($element[0]).width;
-	return parseFloat(width!);
-} : isIE7 ? function ($element: JQuery) {
-	const borderLeftWidth = parseInt($element.css('border-left-width')) || 0;
-	const borderRightWidth = parseInt($element.css('border-right-width')) || 0;
+function _syncTableWidth($clonedTable: JQuery, $originalTable: JQuery) {
+	$clonedTable.css('width',$originalTable.outerWidth()!);
+}
 
-	return $element.width()! + (borderLeftWidth + borderRightWidth) / 2;
-} : function ($element: JQuery) {
-	return $element.width()!;
-};
-
-const _syncTableWidth = function ($clonedTable: JQuery, $originalTable: JQuery) {
-	$clonedTable.width($originalTable.outerWidth()!);
-};
+function _getActualWidth($clonedCell: JQuery, $originalCell: JQuery) {
+	let width = $originalCell[0].clientWidth;
+	const style = getComputedStyle($clonedCell[0]);
+	width = width - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+	return width;
+}
 
 function syncWidth($clonedRowGroups: JQuery, $originalRowGroups: JQuery) {
 	$clonedRowGroups.each(function (rowGroupIndex, clonedRowGroup) {
@@ -30,7 +24,7 @@ function syncWidth($clonedRowGroups: JQuery, $originalRowGroups: JQuery) {
 			$clonedRow.children().each(function (clonedCellIndex, clonedCell) {
 				const $clonedCell = $(clonedCell);
 				const $originalCell = $originalRow.children().eq(clonedCellIndex);
-				$clonedCell.width(_getActualWidth($originalCell));
+				$clonedCell.width(_getActualWidth($clonedCell, $originalCell));
 			});
 		});
 	});

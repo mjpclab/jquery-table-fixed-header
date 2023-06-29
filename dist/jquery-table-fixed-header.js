@@ -1,22 +1,10 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('jquery')) :
     typeof define === 'function' && define.amd ? define(['jquery'], factory) :
-    (global['jquery-table-fixed-header'] = factory(global.jQuery));
-}(this, (function ($) { 'use strict';
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global["jquery-table-fixed-header"] = factory(global.jQuery));
+})(this, (function ($) { 'use strict';
 
-    $ = $ && $.hasOwnProperty('default') ? $['default'] : $;
-
-    var isIE6 = Boolean(window.ActiveXObject &&
-        !window.XMLHttpRequest);
-    var isIE7 = Boolean(window.ActiveXObject &&
-        window.XMLHttpRequest &&
-        !document.documentMode);
-    var isIE8 = Boolean(window.ActiveXObject &&
-        window.XMLHttpRequest &&
-        document.documentMode &&
-        !window.XMLSerializer);
-
-    var options = {
+    var options$1 = {
         headerRows: 1,
         fixedClass: 'table-fixed-header regular-table-fixed-header',
         fixedTop: 0
@@ -37,7 +25,7 @@
 
     function getUnprocessedTables($collection, fixedClass) {
         var fixedClassSelector = convertCssClassToSelector(fixedClass);
-        return $collection.filter("table:not(" + fixedClassSelector + ")");
+        return $collection.filter("table:not(".concat(fixedClassSelector, ")"));
     }
 
     function getFixedTop(value) {
@@ -69,19 +57,15 @@
         return $tableCloned;
     }
 
-    var _getActualWidth = window.getComputedStyle ? function ($element) {
-        var width = window.getComputedStyle($element[0]).width;
-        return parseFloat(width);
-    } : isIE7 ? function ($element) {
-        var borderLeftWidth = parseInt($element.css('border-left-width')) || 0;
-        var borderRightWidth = parseInt($element.css('border-right-width')) || 0;
-        return $element.width() + (borderLeftWidth + borderRightWidth) / 2;
-    } : function ($element) {
-        return $element.width();
-    };
-    var _syncTableWidth = function ($clonedTable, $originalTable) {
-        $clonedTable.width($originalTable.outerWidth());
-    };
+    function _syncTableWidth($clonedTable, $originalTable) {
+        $clonedTable.css('width', $originalTable.outerWidth());
+    }
+    function _getActualWidth($clonedCell, $originalCell) {
+        var width = $originalCell[0].clientWidth;
+        var style = getComputedStyle($clonedCell[0]);
+        width = width - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+        return width;
+    }
     function syncWidth($clonedRowGroups, $originalRowGroups) {
         $clonedRowGroups.each(function (rowGroupIndex, clonedRowGroup) {
             var $clonedRowGroup = $(clonedRowGroup);
@@ -93,7 +77,7 @@
                 $clonedRow.children().each(function (clonedCellIndex, clonedCell) {
                     var $clonedCell = $(clonedCell);
                     var $originalCell = $originalRow.children().eq(clonedCellIndex);
-                    $clonedCell.width(_getActualWidth($originalCell));
+                    $clonedCell.width(_getActualWidth($clonedCell, $originalCell));
                 });
             });
         });
@@ -105,7 +89,7 @@
         var context = {
             $table: $table,
             options: options,
-            $scrollContainer: $empty
+            $scrollContainer: $empty,
         };
         var headerRows = options.headerRows, fixedTopOption = options.fixedTop;
         //header rows
@@ -149,13 +133,13 @@
         scrollHandler();
     }
 
-    var $win = $(window);
-    function tableFixedHeader(customOptions) {
-        var options$$1 = $.extend({}, options, this.data(), customOptions);
-        normalizeOptions(options$$1);
-        getUnprocessedTables(this, options$$1.fixedClass).each(function (index, table) {
-            FixHeader(table, options$$1, function getScrollContainer() {
-                return $win;
+    var $win$1 = $(window);
+    function tableFixedHeader$1(customOptions) {
+        var options = $.extend({}, options$1, this.data(), customOptions);
+        normalizeOptions(options);
+        getUnprocessedTables(this, options.fixedClass).each(function (index, table) {
+            FixHeader(table, options, function getScrollContainer() {
+                return $win$1;
             }, function getUpdatedStyles(fixedTop, context) {
                 var $table = context.$table, $scrollContainer = context.$scrollContainer;
                 return {
@@ -171,19 +155,19 @@
         return this;
     }
 
-    var options$1 = {
+    var options = {
         headerRows: 1,
         fixedClass: 'table-fixed-header container-table-fixed-header',
         fixedTop: 0,
         scrollContainer: ''
     };
 
-    var $win$1 = $(window);
-    function tableFixedHeader$1(customOptions) {
-        var options = $.extend({}, options$1, this.data(), customOptions);
-        normalizeOptions(options);
-        getUnprocessedTables(this, options.fixedClass).each(function (index, table) {
-            FixHeader(table, options, function getScrollContainer(context) {
+    var $win = $(window);
+    function tableFixedHeader(customOptions) {
+        var options$1 = $.extend({}, options, this.data(), customOptions);
+        normalizeOptions(options$1);
+        getUnprocessedTables(this, options$1.fixedClass).each(function (index, table) {
+            FixHeader(table, options$1, function getScrollContainer(context) {
                 var $table = context.$table, options = context.options;
                 var $scrollContainer = $table.closest(options.scrollContainer).eq(0);
                 if ($scrollContainer.length) {
@@ -217,15 +201,15 @@
                     clipPathLeft = '0';
                 }
                 return {
-                    'top': Math.round($scrollContainer.offset().top - $win$1.scrollTop() + fixedTop) + 'px',
-                    'left': $table.offset().left - $win$1.scrollLeft() + 'px',
+                    'top': Math.round($scrollContainer.offset().top - $win.scrollTop() + fixedTop) + 'px',
+                    'left': $table.offset().left - $win.scrollLeft() + 'px',
                     'clip': 'rect(auto ' + clipRight + ' auto ' + clipLeft + ')',
                     'clip-path': 'inset(0 ' + clipPathRight + ' 0 ' + clipPathLeft + ')'
                 };
             }, function bindScrollEventHandler(handler, context) {
                 var $scrollContainer = context.$scrollContainer;
-                $win$1.on('scroll', handler);
-                $win$1.on('resize', handler);
+                $win.on('scroll', handler);
+                $win.on('resize', handler);
                 $scrollContainer.on('scroll', handler);
                 $scrollContainer.on('resize', handler);
             });
@@ -237,20 +221,16 @@
         $('table.fixed-header').tableFixedHeader();
     }
 
-    /// <reference path='./type/public.d.ts' />
     $.fn.tableFixedHeader = function (customOptions) {
-        if (isIE6) {
-            return this;
-        }
-        else if (customOptions && customOptions.scrollContainer) {
-            return tableFixedHeader$1.call(this, customOptions);
+        if (customOptions && customOptions.scrollContainer) {
+            return tableFixedHeader.call(this, customOptions);
         }
         else {
-            return tableFixedHeader.call(this, customOptions);
+            return tableFixedHeader$1.call(this, customOptions);
         }
     };
     autoEnableTableFixedHeader();
 
     return $;
 
-})));
+}));

@@ -1,10 +1,10 @@
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
-import {uglify} from 'rollup-plugin-uglify';
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import terser from '@rollup/plugin-terser';
 
-const getConfig = function(isMinify) {
+const getConfig = function (isMinify) {
 	const config = {
-		input: 'src/js/index.js',
+		input: 'dist/index.js',
 		output: {
 			name: 'jquery-table-fixed-header',
 			format: 'umd',
@@ -17,7 +17,7 @@ const getConfig = function(isMinify) {
 		plugins: [
 			resolve(), // so Rollup can find `ms`
 			commonjs(), // so Rollup can convert `ms` to an ES module
-			isMinify && uglify({ie8: true})
+			isMinify && terser()
 		],
 	};
 

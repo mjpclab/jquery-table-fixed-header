@@ -4,7 +4,7 @@
 # npm install --global typescript rollup
 
 cd "$(dirname $0)"
-rm -rf src/js/* dist/*
+rm -rf dist/*
 
 tsc
 rollup --config
